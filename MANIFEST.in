@@ -1,0 +1,2 @@
+include README.rst setup.py
+recursive-include limitrate *.py

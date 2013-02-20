@@ -1,0 +1,8 @@
+*.py[co]
+.DS_Store
+.idea
+*.egg-info
+build
+dist
+MANIFEST
+nosetests.xml

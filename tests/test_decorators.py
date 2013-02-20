@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement # Python 2.5
 from django.test import TestCase
-from django.test.utils import override_settings
 from django.http import HttpResponse
 
 from throttle.decorators import throttle

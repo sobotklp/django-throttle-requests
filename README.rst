@@ -1,6 +1,6 @@
 django-throttle - a framework for implementing application-level rate-limiting middleware for Django projects
 
-.. image:: https://secure.travis-ci.org/sobotklp/django-throttle?branch=master
+.. image:: https://travis-ci.org/sobotklp/django-throttle.png?branch=master
    :alt: Built Status
    :target: http://travis-ci.org/sobotklp/django-throttle
 
@@ -18,4 +18,5 @@ What it is not intended for::
 Installation
 ============
 
+TODO
 

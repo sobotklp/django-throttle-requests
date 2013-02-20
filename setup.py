@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from setuptools import setup
-import multiprocessing, logging # Suppresses a confusing but harmless warning when running ./setup.py test
+try:
+    import multiprocessing, logging # Suppresses a confusing but harmless warning when running ./setup.py test
+except ImportError:
+    # multiprocessing introduced in Python 2.6
+    pass
+
 from throttle import __version__
 
 long_description = open('README.rst').read()

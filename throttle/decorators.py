@@ -2,18 +2,25 @@ import functools
 from django.utils.decorators import available_attrs
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+
 from exceptions import RateLimiterNotDefined
+from core import throttle_request
 
 def throttle(view_func, bucket='default', *args):
-    def _enfore_throttle(func):
+    def _enforce_throttle(func):
         @functools.wraps(func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
-            throttles = getattr(func, '_throttles', [])
-            setattr(func, 'throttles', throttles)
-            return func(request, *args, **kwargs)
+            _buckets = getattr(view_func, '_throttle_by', [])
+
+            # raises an exception if the rate limit is exceeded
+            throttle_request(func, request, _buckets)
+
+            # rate limit not exceeded - call view
+            response = func(request, *args, **kwargs)
+            return response
         return _wrapped_view
 
-    # Validate the rate limiter used
+    # Validate the rate limiter bucket
     try:
         throttle_bucket = settings.THROTTLE_BUCKETS[bucket]
     except AttributeError:
@@ -24,6 +31,6 @@ def throttle(view_func, bucket='default', *args):
     if view_func:
         _throttles = getattr(view_func, '_throttle_by', [])
         setattr(view_func, '_throttle_by', _throttles)
-        return _enfore_throttle(view_func)
-    return _enfore_throttle
+        return _enforce_throttle(view_func)
+    return _enforce_throttle
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 
 class RateLimitExceeded(PermissionDenied):

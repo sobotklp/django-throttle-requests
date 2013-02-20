@@ -1,7 +1,7 @@
 *.py[co]
 .DS_Store
 .idea
-*.egg-info
+*.egg*
 build
 dist
 MANIFEST

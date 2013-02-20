@@ -3,9 +3,8 @@ import django
 
 TEST_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 
-ROOT_URLCONF='',
-DEBUG=False,
-SITE_ID=1,
+ROOT_URLCONF=''
+DEBUG=False
 
 if django.VERSION[:2] >= (1, 3):
     DATABASES = {
@@ -34,15 +33,15 @@ SECRET_KEY = "asdfnasdf;asdfasdfas"
 TEST_RUNNER = 'django_nose.run_tests'
 NOSE_ARGS= ['--with-xunit']
 
-THROTTLE_TYPES = {
+THROTTLE_ZONES = {
     'default': {
-        'VARY': 'throttle.strategies.RemoteIP',
+        'VARY': 'throttle.zones.RemoteIP',
         'NUM_BUCKETS': 10, # Number of buckets worth of history to keep. Must be at least 2
         'BUCKET_CAPACITY': 5,
         'BUCKET_TIME': 60*15 # Number of seconds to use each bucket.
     },
     'test2': {
-        'VARY': 'throttle.strategies.RemoteIP',
+        'VARY': 'throttle.zones.RemoteIP',
         'NUM_BUCKETS': 10, # Number of buckets worth of history to keep. Must be at least 2
         'BUCKET_CAPACITY': 5,
         'BUCKET_TIME': 60*15 # Number of seconds to use each bucket.

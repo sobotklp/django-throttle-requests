@@ -4,14 +4,14 @@ from django.test import TestCase
 from django.http import HttpResponse
 
 from throttle.decorators import throttle
-from throttle.exceptions import RateLimiterNotDefined
+from throttle.exceptions import ThrottleZoneNotDefined
 
 @throttle
 def _test_view(request):
     return HttpResponse('OK')
 
 @throttle
-@throttle(bucket='test2')
+@throttle(zone='test2')
 def _test_multiple_throttles(request):
     return HttpResponse("Photos")
 
@@ -37,14 +37,14 @@ class test_throttle(TestCase):
         '''
         self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_by'))
         self.assertTrue(hasattr(_test_view, '_throttle_by'))
-        self.assertEqual(_test_view._throttle_by, ['default'])
+        self.assertEqual(_test_view._throttle_by[0].__class__.__name__, 'RemoteIP')
 
-    def test_with_invalid_bucket(self):
+    def test_with_invalid_zone(self):
         '''
-        @throttle throws an exception if an invalid bucket is specified
+        @throttle throws an exception if an invalid zone is specified
         '''
-        with self.assertRaises(RateLimiterNotDefined):
-            _throttled_view = throttle(_test_view_not_throttled, bucket='oœuf')
+        with self.assertRaises(ThrottleZoneNotDefined):
+            _throttled_view = throttle(_test_view_not_throttled, zone='oœuf')
 
     def test_marked_view_returns(self):
         response = self.client.get('/test/')

@@ -1,2 +1,2 @@
 include README.rst setup.py
-recursive-include limitrate *.py
+recursive-include throttle *.py

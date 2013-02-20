@@ -34,8 +34,14 @@ SECRET_KEY = "asdfnasdf;asdfasdfas"
 TEST_RUNNER = 'django_nose.run_tests'
 NOSE_ARGS= ['--with-xunit']
 
-THROTTLE_BUCKETS = {
+THROTTLE_TYPES = {
     'default': {
+        'VARY': 'throttle.strategies.RemoteIP',
+        'NUM_BUCKETS': 10, # Number of buckets worth of history to keep. Must be at least 2
+        'BUCKET_CAPACITY': 5,
+        'BUCKET_TIME': 60*15 # Number of seconds to use each bucket.
+    },
+    'test2': {
         'VARY': 'throttle.strategies.RemoteIP',
         'NUM_BUCKETS': 10, # Number of buckets worth of history to keep. Must be at least 2
         'BUCKET_CAPACITY': 5,

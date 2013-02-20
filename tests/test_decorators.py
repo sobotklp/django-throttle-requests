@@ -10,6 +10,11 @@ from throttle.exceptions import RateLimiterNotDefined
 def _test_view(request):
     return HttpResponse('OK')
 
+@throttle
+@throttle(bucket='test2')
+def _test_multiple_throttles(request):
+    return HttpResponse("Photos")
+
 def _test_view_not_throttled(request):
     return HttpResponse("Go ahead and DoS me!")
 
@@ -32,6 +37,7 @@ class test_throttle(TestCase):
         '''
         self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_by'))
         self.assertTrue(hasattr(_test_view, '_throttle_by'))
+        self.assertEqual(_test_view._throttle_by, ['default'])
 
     def test_with_invalid_bucket(self):
         '''

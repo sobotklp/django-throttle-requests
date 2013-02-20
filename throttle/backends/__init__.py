@@ -1,32 +1,28 @@
-#-*- coding: utf-8 -*-
-from django.conf import settings
-from django.core import exceptions
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.importlib import import_module
 
-def get_store(class_path):
+def get_backend(class_path):
     # Split the class into a <module, classname> pair
     try:
         modulename, classname = class_path.rsplit('.', 1)
     except ValueError:
-        raise exceptions.ImproperlyConfigured("%s isn't a valid module name" % (class_path))
+        raise ImproperlyConfigured("%s isn't a valid module name" % (class_path))
 
     # Attempt to load the module
     try:
         module = import_module(modulename)
     except ImportError as e:
-        raise exceptions.ImproperlyConfigured("Error importing module %s: %s" % (modulename, e))
+        raise ImproperlyConfigured("Error importing module %s: %s" % (modulename, e))
 
     # Attempt to reference the class
     try:
-        klass = getattr(mod, classname)
-    except AttribueError:
-        raise exceptions.ImproperlyConfigured("Module %s has no class '%s'" % (modulename, classname))
+        klass = getattr(module, classname)
+    except AttributeError:
+        raise ImproperlyConfigured("Module %s has no class '%s'" % (modulename, classname))
 
-    store = klass()
+    try:
+        store = klass()
+    except TypeError as e:
+        raise ImproperlyConfigured("%s is not callable" % (klass.__name__))
+
     return store
-
-backend = None
-
-if settings.RATELIMIT_STORE:
-    backend = get_store(settings.RATELIMIT_STORE)
-
-

@@ -37,7 +37,7 @@ class test_throttle(TestCase):
         '''
         self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_by'))
         self.assertTrue(hasattr(_test_view, '_throttle_by'))
-        self.assertEqual(_test_view._throttle_by[0].__class__.__name__, 'RemoteIP')
+        self.assertEqual(_test_view._throttle_by[0].vary.__class__.__name__, 'RemoteIP')
 
     def test_with_invalid_zone(self):
         '''

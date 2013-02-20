@@ -11,7 +11,7 @@ def throttle(view_func=None, zone='default'):
             _buckets = getattr(view_func, '_throttle_by', [])
 
             # raises an exception if the rate limit is exceeded
-            throttle_request(func, request, _buckets)
+            throttle_request(func, request, _buckets, *args, **kwargs)
 
             # rate limit not exceeded - call view
             response = func(request, *args, **kwargs)

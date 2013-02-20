@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 try:
-    import multiprocessing, logging # Suppresses a confusing but harmless warning when running ./setup.py test
+    import multiprocessing # Suppresses a confusing but harmless warning when running ./setup.py test
+    import logging
 except ImportError:
     # multiprocessing introduced in Python 2.6
     pass
@@ -12,21 +13,23 @@ from throttle import __version__
 long_description = open('README.rst').read()
 
 setup(
-    name = "django-throttle",
-    description = "A Django framework for application-layer rate limiting",
-    long_description = long_description,
+    name="django-throttle",
+    description="A Django framework for application-layer rate limiting",
+    long_description=long_description,
     packages=['throttle'],
-    url = "https://github.com/sobotklp/django-throttle",
-    version = __version__,
-    author = 'Lewis Sobotkiewicz',
-    author_email = 'lewis.sobot@gmail.com',
-    tests_require = [
+    url="https://github.com/sobotklp/django-throttle",
+    version=__version__,
+    author='Lewis Sobotkiewicz',
+    author_email='lewis.sobot@gmail.com',
+    install_requires=[
+        'Django>=1.3.7',
+    ],
+    tests_require=[
         'django-nose==1.1',
-        'mock>=0.8',
     ],
     test_suite='runtests.runtests',
-    use_2to3 = True,
-    classifiers = [
+    use_2to3=True,
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',

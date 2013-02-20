@@ -4,14 +4,12 @@ class ThrottleBackendBase(object):
     def __init__(self):
         self.get_timestamp = lambda: int(time.time())
 
-    def _params(self, strategy, *args, **kwargs):
-        # Calculate the bucket to increment
-        timestamp = self.get_timestamp()
-        bucket_num = (timestamp % self.bucket_span) / self.bucket_interval
+    def test_limit(self, zone_name, bucket_key, bucket_num, *args, **kwargs):
+        """
+        Increments the limit for the given bucket.
 
-        self.test_limit(strategy, timestamp, *args, **kwargs)
-
-    def test_limit(self, strategy, timestamp, *args, **kwargs):
+        @returns: the new value of the bucket, post-increment
+        """
         raise NotImplementedError
 
 

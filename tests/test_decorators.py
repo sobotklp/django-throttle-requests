@@ -35,9 +35,9 @@ class test_throttle(TestCase):
         @throttle adds an attribute '_throttle_by' to views it decorates.
         The middleware uses that attribute to enforce limits
         '''
-        self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_by'))
-        self.assertTrue(hasattr(_test_view, '_throttle_by'))
-        self.assertEqual(_test_view._throttle_by[0].vary.__class__.__name__, 'RemoteIP')
+        self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_zone'))
+        self.assertTrue(hasattr(_test_view, '_throttle_zone'))
+        self.assertEqual(_test_view._throttle_zone[0].vary.__class__.__name__, 'RemoteIP')
 
     def test_with_invalid_zone(self):
         '''

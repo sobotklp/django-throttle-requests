@@ -9,8 +9,13 @@ if getattr(settings, 'THROTTLE_BACKEND', ''):
 else:
     raise ImproperlyConfigured('@throttle was used, but settings.THROTTLE_BACKEND is not set')
 
-def throttle_request(view_func, request, zones, *args, **kwargs):
+def throttle_request(view_func, request, zones, *view_args, **view_kwargs):
     for zone in zones:
-        bucket_key = zone.process_view(request, view_func, args, kwargs)
-        #raise RateLimitExceeded(bucket)
+        zone_name, bucket_key, bucket_num = zone.process_view(request, view_func, view_args, view_kwargs)
+
+        print zone_name, bucket_key, bucket_num
+
+        value = backend.test_limit(zone_name, bucket_key, bucket_num)
+        print value
+
         pass

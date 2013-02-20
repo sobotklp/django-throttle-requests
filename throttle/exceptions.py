@@ -6,3 +6,5 @@ class RateLimitExceeded(PermissionDenied):
 class ThrottleZoneNotDefined(ImproperlyConfigured):
     pass
 
+class ThrottleImproperlyConfigured(ImproperlyConfigured):
+    pass

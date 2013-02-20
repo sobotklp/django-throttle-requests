@@ -34,8 +34,9 @@ class ThrottleZone(object):
         # Calculate the bucket offset to increment
         timestamp = self.get_timestamp()
         bucket_num = (timestamp % self.bucket_span) / self.bucket_interval
+        bucket_num_next = (bucket_num+1) % self.num_buckets
 
-        return (self.name, bucket_key, bucket_num)
+        return (self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_capacity)
 
     @property
     def name(self):

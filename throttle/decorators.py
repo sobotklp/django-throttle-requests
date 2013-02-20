@@ -8,10 +8,10 @@ def throttle(view_func=None, zone='default'):
     def _enforce_throttle(func):
         @functools.wraps(func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
-            _buckets = getattr(view_func, '_throttle_zone', [])
+            _throttle_zone = getattr(view_func, '_throttle_zone', None)
 
             # raises an exception if the rate limit is exceeded
-            throttle_request(func, request, _buckets, *args, **kwargs)
+            throttle_request(func, request, _throttle_zone, *args, **kwargs)
 
             # rate limit not exceeded - call view
             response = func(request, *args, **kwargs)
@@ -22,9 +22,7 @@ def throttle(view_func=None, zone='default'):
     _zone = get_zone(zone)
 
     if view_func:
-        _throttles = getattr(view_func, '_throttle_zone', [])
-        _throttles.append(_zone)
-        setattr(view_func, '_throttle_zone', _throttles)
+        setattr(view_func, '_throttle_zone', _zone)
         return _enforce_throttle(view_func)
     return _enforce_throttle
 

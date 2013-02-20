@@ -34,7 +34,7 @@ class TestRemoteIP(TestCase):
 class Test_ThrottleZone(TestCase):
     # TODO: Add more tests for the constructor
     def setUp(self):
-        self.zone = ThrottleZone('testZone', RemoteIP, BUCKET_INTERVAL=60, NUM_BUCKETS=2, BUCKET_CAPACITY=1)
+        self.zone = ThrottleZone('testZone', RemoteIP, BUCKET_INTERVAL=60, NUM_BUCKETS=2, BUCKET_CAPACITY=15)
 
         class FakeRequest:
             META = {
@@ -47,22 +47,30 @@ class Test_ThrottleZone(TestCase):
         # Don't want unit tests to rely on the value of time.time()
         self.zone.get_timestamp = lambda: 1
 
-        name, bucket_key, bucket_num = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
 
         self.assertEqual(name, 'testZone')
         self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
         self.assertEqual(bucket_num, 0)
+        self.assertEqual(next_bucket_num, 1)
+        self.assertEqual(bucket_capacity, 15)
 
+        # Increment the timestamp - now it should fall into the second bucket
         self.zone.get_timestamp = lambda: 61
-        name, bucket_key, bucket_num = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
 
         self.assertEqual(name, 'testZone')
         self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
         self.assertEqual(bucket_num, 1)
+        self.assertEqual(next_bucket_num, 0)
+        self.assertEqual(bucket_capacity, 15)
 
+        # Increment the timestamp again - now should roll over to first bucket
         self.zone.get_timestamp = lambda: 121
-        name, bucket_key, bucket_num = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
 
         self.assertEqual(name, 'testZone')
         self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
         self.assertEqual(bucket_num, 0)
+        self.assertEqual(next_bucket_num, 1)
+        self.assertEqual(bucket_capacity, 15)

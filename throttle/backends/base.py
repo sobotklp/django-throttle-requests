@@ -1,10 +1,5 @@
-import time
-
-class ThrottleBackendBase(object):
-    def __init__(self):
-        self.get_timestamp = lambda: int(time.time())
-
-    def test_limit(self, zone_name, bucket_key, bucket_num, *args, **kwargs):
+class ThrottleBackendBase:
+    def test_limit(self, zone_name, bucket_key, bucket_num):
         """
         Increments the limit for the given bucket.
 

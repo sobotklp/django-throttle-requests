@@ -42,3 +42,5 @@ THROTTLE_BUCKETS = {
         'BUCKET_TIME': 60*15 # Number of seconds to use each bucket.
     }
 }
+
+THROTTLE_BACKEND = 'throttle.backends.cache.CacheBackend'

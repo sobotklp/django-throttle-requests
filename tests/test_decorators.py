@@ -37,7 +37,6 @@ class test_throttle(TestCase):
     def test_view_marked(self):
         '''
         @throttle adds an attribute '_throttle_by' to views it decorates.
-        The middleware uses that attribute to enforce limits
         '''
         self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_zone'))
         self.assertTrue(hasattr(_test_view, '_throttle_zone'))
@@ -49,6 +48,7 @@ class test_throttle(TestCase):
         '''
         with self.assertRaises(ThrottleZoneNotDefined):
             _throttled_view = throttle(_test_view_not_throttled, zone='oœuf')
+            _throttled_view(object)
 
     def test_marked_view_returns(self):
         response = self.client.get('/test/')
@@ -68,9 +68,9 @@ class test_throttle(TestCase):
 
             # THROTTLE_ZONE 'default' allows 5 requests/second
             for i in range(5):
-                response = self.client.get('/test/', REMOTE_ADDR="test_returns_403_if_exceeded")
-                self.assertEqual(response.status_code, 200)
+                response = self.client.get('/test/', REMOTE_ADDR="user%i" % iteration)
+                self.assertEqual(response.status_code, 200, '%ith iteration' % (iteration+1))
 
             # Now the next request should fail
-            response = self.client.get('/test/', REMOTE_ADDR="test_returns_403_if_exceeded")
+            response = self.client.get('/test/', REMOTE_ADDR="user%i" % iteration)
             self.assertEqual(response.status_code, 403)

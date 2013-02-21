@@ -7,10 +7,11 @@ def throttle(view_func=None, zone='default'):
     def _enforce_throttle(func):
         @functools.wraps(func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
-            _throttle_zone = getattr(view_func, '_throttle_zone', None)
+            # Get zone from cache
+            _throttle_zone = get_zone(zone)
 
             # raises an exception if the rate limit is exceeded
-            response = _throttle_zone.process_view(request, view_func, args, kwargs)
+            response = _throttle_zone.process_view(request, func, args, kwargs)
             return response
         return _wrapped_view
 

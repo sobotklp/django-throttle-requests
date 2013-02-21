@@ -5,7 +5,7 @@ from throttle.zones import RemoteIP, ThrottleZone
 
 
 def _test_remote_ip(request):
-    return HttpResponse(RemoteIP().process_view(request, _test_remote_ip, None, None))
+    return HttpResponse(RemoteIP().get_bucket_key(request, _test_remote_ip, None, None))
 
 try:
     from django.conf.urls import patterns, url

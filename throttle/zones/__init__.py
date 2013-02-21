@@ -29,7 +29,7 @@ class ThrottleZone(object):
         self.bucket_span = self.bucket_interval * self.num_buckets
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        bucket_key = self.vary.process_view(request, view_func, view_args, view_kwargs)
+        bucket_key = self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
 
         # Calculate the bucket offset to increment
         timestamp = self.get_timestamp()

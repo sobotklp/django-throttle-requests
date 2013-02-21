@@ -2,7 +2,7 @@ class RemoteIP:
     def __init__(self, **config):
         pass
 
-    def process_view(self, request, view_func, view_args, view_kwargs):
+    def get_bucket_key(self, request, view_func, view_args, view_kwargs):
         """
         Return our best crack at the remote IP address
         """

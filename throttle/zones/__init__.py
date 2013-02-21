@@ -1,10 +1,13 @@
 import time
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 from remoteip import RemoteIP
 
 from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
 from throttle.utils import load_class_from_path
 from throttle.backends import get_backend
+
+THROTTLE_ENABLED = getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG)
 
 class ThrottleZone(object):
     def __init__(self, zone_name, vary_with, **config):
@@ -29,6 +32,10 @@ class ThrottleZone(object):
         self.bucket_span = self.bucket_interval * self.num_buckets
 
     def process_view(self, request, view_func, view_args, view_kwargs):
+        # If THROTTLE_ENABLED is False, just return the response from the view.
+        if not THROTTLE_ENABLED: #getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG):
+            return view_func(request, *view_args, **view_kwargs)
+
         bucket_key = self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
 
         # Calculate the bucket offset to increment
@@ -71,8 +78,6 @@ def load_zone(zone_name, **config):
     return ThrottleZone(zone_name, vary_klass, **config)
 
 def get_zone(zone_name):
-    from django.conf import settings
-
     try:
         throttle_zone = settings.THROTTLE_ZONES[zone_name]
         return load_zone(zone_name, **throttle_zone)

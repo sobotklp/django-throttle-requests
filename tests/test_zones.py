@@ -1,3 +1,4 @@
+from __future__ import with_statement # Python 2.5
 from django.test import TestCase
 from django.http import HttpResponse
 
@@ -62,3 +63,19 @@ class Test_ThrottleZone(TestCase):
         self.zone.get_timestamp = lambda: 121
         response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
         self.assertEqual(response.throttle_remaining, 14)
+
+    def test_obeys_THROTTLE_ENABLED_setting(self):
+        # Don't want unit tests to rely on the value of time.time()
+        self.zone.get_timestamp = lambda: 1
+
+        import throttle.zones
+        old_THROTTLE_ENABLED = throttle.zones.THROTTLE_ENABLED
+        throttle.zones.THROTTLE_ENABLED = False
+
+        # Should be able to make more than 15 calls now
+        for i in range(20):
+            response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+            self.assertEqual(response.status_code, 200)
+            self.assertFalse(hasattr(response, 'throttle_remaining'))
+
+        throttle.zones.THROTTLE_ENABLED = old_THROTTLE_ENABLED

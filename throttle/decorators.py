@@ -10,10 +10,7 @@ def throttle(view_func=None, zone='default'):
             _throttle_zone = getattr(view_func, '_throttle_zone', None)
 
             # raises an exception if the rate limit is exceeded
-            num_remaining = _throttle_zone.process_view(request, view_func, args, kwargs)
-
-            # rate limit not exceeded - call view
-            response = func(request, *args, **kwargs)
+            response = _throttle_zone.process_view(request, view_func, args, kwargs)
             return response
         return _wrapped_view
 

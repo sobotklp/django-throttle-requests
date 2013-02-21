@@ -47,18 +47,18 @@ class Test_ThrottleZone(TestCase):
         # Don't want unit tests to rely on the value of time.time()
         self.zone.get_timestamp = lambda: 1
 
-        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-        self.assertEqual(num_remaining, 14)
+        response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(response.throttle_remaining, 14)
 
-        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-        self.assertEqual(num_remaining, 13)
+        response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(response.throttle_remaining, 13)
 
         # Increment the timestamp - now it should fall into the second bucket
         self.zone.get_timestamp = lambda: 61
-        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-        self.assertEqual(num_remaining, 14)
+        response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(response.throttle_remaining, 14)
 
         # Increment the timestamp again - now should roll over to first bucket
         self.zone.get_timestamp = lambda: 121
-        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-        self.assertEqual(num_remaining, 14)
+        response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(response.throttle_remaining, 14)

@@ -10,6 +10,8 @@ class ThrottleZone(object):
     def __init__(self, zone_name, vary_with, **config):
         self._zone_name = zone_name
         self.vary = vary_with(**config)
+        self.config = config
+        self.get_timestamp = lambda: int(time.time())
 
         try:
             self.bucket_interval = int(config['BUCKET_INTERVAL'])
@@ -25,9 +27,6 @@ class ThrottleZone(object):
             raise ThrottleImproperlyConfigured('THROTTLE_ZONE \'%s\' entry missing BUCKET_CAPACITY parameter)' % (zone_name))
 
         self.bucket_span = self.bucket_interval * self.num_buckets
-        self.config = config
-
-        self.get_timestamp = lambda: int(time.time())
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         bucket_key = self.vary.process_view(request, view_func, view_args, view_kwargs)
@@ -38,17 +37,30 @@ class ThrottleZone(object):
         bucket_num_next = (bucket_num+1) % self.num_buckets
 
         # Tell the backing store to increment the count
-        print self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_capacity
+        new_value = get_backend().incr_bucket(self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_span)
 
-        new_value = get_backend().incr_bucket(self.name, bucket_key, bucket_num, bucket_num_next)
-
-        print new_value
+        # Has the bucket capacity been exceeded?
         if new_value > self.bucket_capacity:
             raise RateLimitExceeded(self.name)
 
         num_remaining = self.bucket_capacity - new_value
 
-        return num_remaining
+        # Execute the Django view. Add a few attributes to the response object.
+        response = view_func(request, *view_args, **view_kwargs)
+        response.throttle_limit = self.bucket_capacity
+        response.throttle_remaining = num_remaining
+
+        # Perform additional processing on the response object
+        # TODO: Make this better
+        response = self.process_response(request, response, remaining=num_remaining)
+
+        return response
+
+    def process_response(self, request, response, remaining=0):
+        # TODO: Make this configurable
+        response['X-Request-Limit-Limit'] = self.bucket_capacity
+        response['X-Request-Limit-Remaining'] = remaining
+        return response
 
     @property
     def name(self):

@@ -1,32 +1,24 @@
-import os
-import django
-
-TEST_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-
 ROOT_URLCONF=''
 DEBUG=False
 
-if django.VERSION[:2] >= (1, 3):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-            }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+        }
+}
+
+# Need to use LocMemCache for testing 'throttle.backends.cache.CacheBackend'
+# Can't use DummyCache because our functionality depends on the cache backend actually saving values.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', # Bad for production!
     }
-else:
-    DATABASE_ENGINE = 'sqlite3'
+}
 
 INSTALLED_APPS = [
     'throttle',
-    'tests',
-    ]
-
-TEMPLATE_DIRS = (
-    # Specifically choose a name that will not be considered
-    # by app_directories loader, to make sure each test uses
-    # a specific template without considering the others.
-    os.path.join(TEST_DIR, 'test_templates'),
-)
+]
 
 SECRET_KEY = "asdfnasdf;asdfasdfas"
 

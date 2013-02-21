@@ -15,6 +15,9 @@ def _test_view(request):
 def _test_multiple_throttles(request):
     return HttpResponse("Photos")
 
+def _test_view_with_parameters(request, id):
+    return HttpResponse(str(id))
+
 def _test_view_not_throttled(request):
     return HttpResponse("Go ahead and DoS me!")
 
@@ -25,6 +28,7 @@ except ImportError: # django < 1.4
 
 urlpatterns = patterns('',
     url(r'^test/$', _test_view),
+    url(r'^test/(\d+)/$', _test_view_with_parameters),
 )
 
 class test_throttle(TestCase):
@@ -51,6 +55,12 @@ class test_throttle(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, "OK")
+
+    def test_marked_view_with_params(self):
+        response = self.client.get('/test/99/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "99")
 
     def test_returns_403_if_exceeded(self):
         for iteration in range(10):

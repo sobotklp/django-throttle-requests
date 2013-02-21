@@ -3,19 +3,19 @@ from __future__ import with_statement # Python 2.5
 from django.utils import unittest
 from django.core.exceptions import ImproperlyConfigured
 
-from throttle.backends import get_backend
+from throttle.utils import load_class_from_path
 
 class test_load_module_from_path(unittest.TestCase):
     def test_invalid_modulename(self):
         with self.assertRaises(ImproperlyConfigured):
-            get_backend("allmodulenoklass")
+            load_class_from_path("allmodulenoklass")
         with self.assertRaises(ImproperlyConfigured):
-            get_backend("badmodule.badclass")
+            load_class_from_path("badmodule.badclass")
         with self.assertRaises(ImproperlyConfigured):
-            get_backend("tests.blah")
+            load_class_from_path("tests.blah")
         with self.assertRaises(ImproperlyConfigured):
-            get_backend("tests.BADClass")
+            load_class_from_path("tests.BADClass")
 
     def test_get_module(self):
-        module = get_backend("tests.backends.TestThrottleBackend")
-        self.assertEqual(module.__class__.__name__, 'TestThrottleBackend')
+        module = load_class_from_path("tests.backends.TestThrottleBackend")
+        self.assertEqual(module.__name__, 'TestThrottleBackend')

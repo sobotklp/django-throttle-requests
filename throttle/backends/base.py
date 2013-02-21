@@ -1,5 +1,5 @@
 class ThrottleBackendBase:
-    def test_limit(self, zone_name, bucket_key, bucket_num):
+    def incr_bucket(self, zone_name, bucket_key, bucket_num, bucket_num_next):
         """
         Increments the limit for the given bucket.
 

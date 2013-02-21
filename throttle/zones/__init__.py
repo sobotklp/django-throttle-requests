@@ -2,8 +2,9 @@ import time
 from django.core.exceptions import ImproperlyConfigured
 from remoteip import RemoteIP
 
-from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured
+from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
 from throttle.utils import load_class_from_path
+from throttle.backends import get_backend
 
 class ThrottleZone(object):
     def __init__(self, zone_name, vary_with, **config):
@@ -36,7 +37,18 @@ class ThrottleZone(object):
         bucket_num = (timestamp % self.bucket_span) / self.bucket_interval
         bucket_num_next = (bucket_num+1) % self.num_buckets
 
-        return (self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_capacity)
+        # Tell the backing store to increment the count
+        print self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_capacity
+
+        new_value = get_backend().incr_bucket(self.name, bucket_key, bucket_num, bucket_num_next)
+
+        print new_value
+        if new_value > self.bucket_capacity:
+            raise RateLimitExceeded(self.name)
+
+        num_remaining = self.bucket_capacity - new_value
+
+        return num_remaining
 
     @property
     def name(self):

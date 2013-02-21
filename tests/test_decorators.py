@@ -24,8 +24,8 @@ except ImportError: # django < 1.4
     from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('',
-                       url(r'^test/$', _test_view),
-                       )
+    url(r'^test/$', _test_view),
+)
 
 class test_throttle(TestCase):
     urls = __module__

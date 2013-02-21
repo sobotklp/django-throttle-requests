@@ -1,7 +1,6 @@
 import functools
 from django.utils.decorators import available_attrs
 
-from core import throttle_request
 from zones import get_zone
 
 def throttle(view_func=None, zone='default'):
@@ -11,7 +10,7 @@ def throttle(view_func=None, zone='default'):
             _throttle_zone = getattr(view_func, '_throttle_zone', None)
 
             # raises an exception if the rate limit is exceeded
-            throttle_request(func, request, _throttle_zone, *args, **kwargs)
+            num_remaining = _throttle_zone.process_view(request, view_func, args, kwargs)
 
             # rate limit not exceeded - call view
             response = func(request, *args, **kwargs)

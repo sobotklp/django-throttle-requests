@@ -47,30 +47,18 @@ class Test_ThrottleZone(TestCase):
         # Don't want unit tests to rely on the value of time.time()
         self.zone.get_timestamp = lambda: 1
 
-        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(num_remaining, 14)
 
-        self.assertEqual(name, 'testZone')
-        self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
-        self.assertEqual(bucket_num, 0)
-        self.assertEqual(next_bucket_num, 1)
-        self.assertEqual(bucket_capacity, 15)
+        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(num_remaining, 13)
 
         # Increment the timestamp - now it should fall into the second bucket
         self.zone.get_timestamp = lambda: 61
-        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-
-        self.assertEqual(name, 'testZone')
-        self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
-        self.assertEqual(bucket_num, 1)
-        self.assertEqual(next_bucket_num, 0)
-        self.assertEqual(bucket_capacity, 15)
+        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(num_remaining, 14)
 
         # Increment the timestamp again - now should roll over to first bucket
         self.zone.get_timestamp = lambda: 121
-        name, bucket_key, bucket_num, next_bucket_num, bucket_capacity = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
-
-        self.assertEqual(name, 'testZone')
-        self.assertEqual(bucket_key, '127.0.0.1') # because we're using RemoteIP
-        self.assertEqual(bucket_num, 0)
-        self.assertEqual(next_bucket_num, 1)
-        self.assertEqual(bucket_capacity, 15)
+        num_remaining = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
+        self.assertEqual(num_remaining, 14)

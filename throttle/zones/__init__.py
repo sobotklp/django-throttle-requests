@@ -9,6 +9,8 @@ from throttle.backends import get_backend
 
 THROTTLE_ENABLED = getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG)
 
+_THROTTLE_ZONES = {}
+
 class ThrottleZone(object):
     def __init__(self, zone_name, vary_with, **config):
         self._zone_name = zone_name
@@ -33,7 +35,7 @@ class ThrottleZone(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         # If THROTTLE_ENABLED is False, just return the response from the view.
-        if not THROTTLE_ENABLED: #getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG):
+        if not THROTTLE_ENABLED:
             return view_func(request, *view_args, **view_kwargs)
 
         bucket_key = self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
@@ -79,9 +81,14 @@ def load_zone(zone_name, **config):
 
 def get_zone(zone_name):
     try:
-        throttle_zone = settings.THROTTLE_ZONES[zone_name]
-        return load_zone(zone_name, **throttle_zone)
-    except AttributeError:
-        raise ImproperlyConfigured('@throttle is used, but settings.THROTTLE_ZONES is undefined')
+        return _THROTTLE_ZONES[zone_name]
     except KeyError:
-        raise ThrottleZoneNotDefined(zone_name)
+        try:
+            throttle_zone = settings.THROTTLE_ZONES[zone_name]
+            zone = load_zone(zone_name, **throttle_zone)
+            _THROTTLE_ZONES[zone_name] = zone
+            return zone
+        except AttributeError:
+            raise ImproperlyConfigured('@throttle is used, but settings.THROTTLE_ZONES is undefined')
+        except KeyError:
+            raise ThrottleZoneNotDefined(zone_name)

@@ -36,11 +36,11 @@ class test_throttle(TestCase):
 
     def test_view_marked(self):
         '''
-        @throttle adds an attribute '_throttle_by' to views it decorates.
+        @throttle adds an attribute 'throttle_zone' to views it decorates.
         '''
-        self.assertFalse(hasattr(_test_view_not_throttled, '_throttle_zone'))
-        self.assertTrue(hasattr(_test_view, '_throttle_zone'))
-        self.assertEqual(_test_view._throttle_zone.vary.__class__.__name__, 'RemoteIP')
+        self.assertFalse(hasattr(_test_view_not_throttled, 'throttle_zone'))
+        self.assertTrue(hasattr(_test_view, 'throttle_zone'))
+        self.assertEqual(_test_view.throttle_zone.vary.__class__.__name__, 'RemoteIP')
 
     def test_with_invalid_zone(self):
         '''
@@ -64,13 +64,13 @@ class test_throttle(TestCase):
 
     def test_returns_403_if_exceeded(self):
         for iteration in range(10):
-            _test_view._throttle_zone.get_timestamp = lambda: iteration
+            _test_view.throttle_zone.get_timestamp = lambda: iteration
 
             # THROTTLE_ZONE 'default' allows 5 requests/second
             for i in range(5):
-                response = self.client.get('/test/', REMOTE_ADDR="user%i" % iteration)
-                self.assertEqual(response.status_code, 200, '%ith iteration' % (iteration+1))
+                response = self.client.get('/test/', REMOTE_ADDR='test_returns_403_if_exceeded')
+                self.assertEqual(response.status_code, 200, '%ith iteration' % (iteration))
 
             # Now the next request should fail
-            response = self.client.get('/test/', REMOTE_ADDR="user%i" % iteration)
+            response = self.client.get('/test/', REMOTE_ADDR='test_returns_403_if_exceeded')
             self.assertEqual(response.status_code, 403)

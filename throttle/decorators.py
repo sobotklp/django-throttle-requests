@@ -19,7 +19,7 @@ def throttle(view_func=None, zone='default'):
     _zone = get_zone(zone)
 
     if view_func:
-        setattr(view_func, '_throttle_zone', _zone)
+        setattr(view_func, 'throttle_zone', _zone)
         return _enforce_throttle(view_func)
     return _enforce_throttle
 

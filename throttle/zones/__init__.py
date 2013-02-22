@@ -20,16 +20,28 @@ class ThrottleZone(object):
 
         try:
             self.bucket_interval = int(config['BUCKET_INTERVAL'])
+            if self.bucket_interval <= 0:
+                raise ValueError
         except KeyError:
-            raise ThrottleImproperlyConfigured('A THROTTLE_ZONE entry missing BUCKET_INTERVAL parameter)')
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_INTERVAL parameter)' % (zone_name))
+        except ValueError:
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_INTERVAL\'] must be > 0' % (zone_name))
+
         try:
             self.num_buckets = int(config['NUM_BUCKETS'])
+            if self.num_buckets < 2:
+                raise ValueError
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE \'%s\' entry missing NUM_BUCKETS parameter)' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] entry missing NUM_BUCKETS parameter)' % (zone_name))
+        except ValueError:
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'NUM_BUCKETS\'] must be >= 2' % (zone_name))
+
         try:
             self.bucket_capacity = int(config['BUCKET_CAPACITY'])
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE \'%s\' entry missing BUCKET_CAPACITY parameter)' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] entry missing BUCKET_CAPACITY parameter)' % (zone_name))
+        except ValueError:
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_CAPACITY\'] must be an int' % (zone_name))
 
         self.bucket_span = self.bucket_interval * self.num_buckets
 

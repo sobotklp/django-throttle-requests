@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement # Python 2.5
+from __future__ import with_statement  # Python 2.5
 from django.test import TestCase
 from django.http import HttpResponse
 

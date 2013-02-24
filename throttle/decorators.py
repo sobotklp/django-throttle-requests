@@ -3,6 +3,7 @@ from django.utils.decorators import available_attrs
 
 from zones import get_zone
 
+
 def throttle(view_func=None, zone='default'):
     def _enforce_throttle(func):
         @functools.wraps(func, assigned=available_attrs(view_func))
@@ -22,4 +23,3 @@ def throttle(view_func=None, zone='default'):
         setattr(view_func, 'throttle_zone', _zone)
         return _enforce_throttle(view_func)
     return _enforce_throttle
-

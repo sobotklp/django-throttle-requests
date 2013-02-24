@@ -11,6 +11,7 @@ THROTTLE_ENABLED = getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG)
 
 _THROTTLE_ZONES = {}
 
+
 class ThrottleZone(object):
     def __init__(self, zone_name, vary_with, **config):
         self._zone_name = zone_name
@@ -23,25 +24,25 @@ class ThrottleZone(object):
             if self.bucket_interval <= 0:
                 raise ValueError
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_INTERVAL parameter)' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_INTERVAL parameter)' % zone_name)
         except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_INTERVAL\'] must be > 0' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_INTERVAL\'] must be > 0' % zone_name)
 
         try:
             self.num_buckets = int(config['NUM_BUCKETS'])
             if self.num_buckets < 2:
                 raise ValueError
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] entry missing NUM_BUCKETS parameter)' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing NUM_BUCKETS parameter)' % zone_name)
         except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'NUM_BUCKETS\'] must be >= 2' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'NUM_BUCKETS\'] must be >= 2' % zone_name)
 
         try:
             self.bucket_capacity = int(config['BUCKET_CAPACITY'])
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] entry missing BUCKET_CAPACITY parameter)' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_CAPACITY parameter)' % zone_name)
         except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_CAPACITY\'] must be an int' % (zone_name))
+            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_CAPACITY\'] must be an int' % zone_name)
 
         self.bucket_span = self.bucket_interval * self.num_buckets
 
@@ -55,7 +56,7 @@ class ThrottleZone(object):
         # Calculate the bucket offset to increment
         timestamp = self.get_timestamp()
         bucket_num = (timestamp % self.bucket_span) / self.bucket_interval
-        bucket_num_next = (bucket_num+1) % self.num_buckets
+        bucket_num_next = (bucket_num + 1) % self.num_buckets
 
         # Tell the backing store to increment the count
         new_value = get_backend().incr_bucket(self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_span)
@@ -87,9 +88,11 @@ class ThrottleZone(object):
     def name(self):
         return self._zone_name
 
-def load_zone(zone_name, **config):
+
+def _load_zone(zone_name, **config):
     vary_klass = load_class_from_path(config['VARY'])
     return ThrottleZone(zone_name, vary_klass, **config)
+
 
 def get_zone(zone_name):
     try:
@@ -97,7 +100,7 @@ def get_zone(zone_name):
     except KeyError:
         try:
             throttle_zone = settings.THROTTLE_ZONES[zone_name]
-            zone = load_zone(zone_name, **throttle_zone)
+            zone = _load_zone(zone_name, **throttle_zone)
             _THROTTLE_ZONES[zone_name] = zone
             return zone
         except AttributeError:

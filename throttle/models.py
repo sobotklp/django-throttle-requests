@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 
+class ThrottleBucketManager(models.Manager):
+    pass
+
 class __ThrottleBucket(models.Model):
     """
     A Django model for storing rate-limiting information
@@ -14,12 +17,13 @@ class __ThrottleBucket(models.Model):
     bucket_key = models.CharField(max_length=255, db_index=True, editable=False)
 
     count = models.IntegerField(default=0)
-    expires = models.PositiveIntegerField(editable=False)
+    expires = models.PositiveIntegerField(editable=False, help_text="UNIX timestamp stating when this entry expires")
 
     class Meta:
         unique_together = [('zone_name', 'bucket_timespan', 'bucket_offset', 'bucket_key',)]
+        abstract=True #
 
 # Normally, we aren't going to use this
-if getattr(settings, 'THROTTLE_BACKEND', '').rpartition('.')[2] == 'ModelStore':
-    ThrottleBucket = __ThrottleBucket
-
+if getattr(settings, 'THROTTLE_BACKEND', '').rpartition('.')[2] == 'ModelBackend':
+    class ThrottleBucket(__ThrottleBucket):
+        pass

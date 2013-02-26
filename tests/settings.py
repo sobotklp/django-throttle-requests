@@ -40,4 +40,4 @@ THROTTLE_ZONES = {
     }
 }
 
-THROTTLE_BACKEND = 'throttle.backends.cache.CacheBackend'
+THROTTLE_BACKEND = 'throttle.backends.redispy.RedisBackend'

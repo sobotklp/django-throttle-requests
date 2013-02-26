@@ -8,6 +8,6 @@ class LocMemBackend(ThrottleBackendBase):
 
     This backend is not intended to be used for production purposes.
     """
-    def test_limit(self, strategy, timestamp, *args, **kwargs):
+    def incr_bucket(self, zone_name, bucket_key, bucket_num, bucket_num_next, bucket_span, cost=1):
         pass
 

@@ -3,6 +3,7 @@ from django.conf import settings
 
 from throttle.utils import load_class_from_path
 
+THROTTLE_BACKEND = getattr(settings, 'THROTTLE_BACKEND', {})
 _backend = None
 
 def load_backend_from_path(classpath):
@@ -17,7 +18,7 @@ def get_backend():
     if _backend:
         return _backend
 
-    if getattr(settings, 'THROTTLE_BACKEND', ''):
+    if THROTTLE_BACKEND:
         _backend = load_backend_from_path(settings.THROTTLE_BACKEND)
         return _backend
     else:

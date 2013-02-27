@@ -11,7 +11,7 @@ env:
 matrix:
   exclude:
     - python: "2.5"
-    - env: DJANGO=1.5
+      env: DJANGO=1.5
 install:
   - pip install -q Django==$DJANGO --use-mirrors
   - python setup.py -q install

@@ -55,7 +55,7 @@ class ThrottleZone(object):
 
         # Calculate the bucket offset to increment
         timestamp = self.get_timestamp()
-        bucket_num = (timestamp % self.bucket_span) / self.bucket_interval
+        bucket_num = int((timestamp % self.bucket_span) / self.bucket_interval)
         bucket_num_next = (bucket_num + 1) % self.num_buckets
 
         # Tell the backing store to increment the count

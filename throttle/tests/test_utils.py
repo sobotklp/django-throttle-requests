@@ -17,5 +17,5 @@ class test_load_module_from_path(unittest.TestCase):
             load_class_from_path("tests.BADClass")
 
     def test_get_module(self):
-        module = load_class_from_path("tests.backends.TestThrottleBackend")
+        module = load_class_from_path("throttle.tests.backends.TestThrottleBackend")
         self.assertEqual(module.__name__, 'TestThrottleBackend')

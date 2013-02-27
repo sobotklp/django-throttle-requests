@@ -1,5 +1,5 @@
-from base import ThrottleBackendBase
 from django.core.cache import cache
+from throttle.backends.base import ThrottleBackendBase
 
 
 class CacheBackend(ThrottleBackendBase):

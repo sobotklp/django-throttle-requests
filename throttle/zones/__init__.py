@@ -1,8 +1,8 @@
 import time
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from remoteip import RemoteIP
 
+from throttle.zones.remoteip import RemoteIP
 from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
 from throttle.utils import load_class_from_path
 from throttle.backends import get_backend

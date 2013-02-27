@@ -22,15 +22,15 @@ class TestRemoteIP(TestCase):
 
     def test_remoteIP(self):
         response = self.client.get('/test/')
-        self.assertEqual(response.content, '127.0.0.1')
+        self.assertContains(response, '127.0.0.1')
 
     def test_with_alternate_remote_addr(self):
         response = self.client.get('/test/', REMOTE_ADDR='10.5.2.1')
-        self.assertEqual(response.content, '10.5.2.1')
+        self.assertContains(response, '10.5.2.1')
 
     def test_with_proxied_ip(self):
         response = self.client.get('/test/', HTTP_X_FORWARDED_FOR='10.60.70.255', REMOTE_ADDR='10.5.2.1')
-        self.assertEqual(response.content, '10.60.70.255')
+        self.assertContains(response, '10.60.70.255')
 
 class Test_ThrottleZone(TestCase):
     # TODO: Add more tests for the constructor

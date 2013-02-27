@@ -1,7 +1,7 @@
 import functools
 from django.utils.decorators import available_attrs
 
-from zones import get_zone
+from throttle.zones import get_zone
 
 
 def throttle(view_func=None, zone='default'):

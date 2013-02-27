@@ -54,13 +54,13 @@ class test_throttle(TestCase):
         response = self.client.get('/test/')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "OK")
+        self.assertContains(response, "OK")
 
     def test_marked_view_with_params(self):
         response = self.client.get('/test/99/')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, "99")
+        self.assertContains(response, "99")
 
     def test_returns_403_if_exceeded(self):
         for iteration in range(10):

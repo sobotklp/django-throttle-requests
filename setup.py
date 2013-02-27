@@ -24,9 +24,6 @@ setup(
     install_requires=[
         'Django>=1.3.7',
     ],
-    tests_require=[
-        'django-nose==1.1',
-    ],
     test_suite='runtests.runtests',
     use_2to3=True,
     classifiers=[
@@ -40,6 +37,7 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: 3.2',
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],

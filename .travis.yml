@@ -22,6 +22,8 @@ matrix:
       env: DJANGO=1.5
     - python: "3.3"
       env: DJANGO=1.5
+    - python: "3.2"
+      env: DJANGO=1.6.1
     - python: "3.3"
       env: DJANGO=1.6.1
 install:

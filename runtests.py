@@ -28,6 +28,8 @@ if not settings.configured:
             'throttle',
             ],
 
+        MIDDLEWARE_CLASSES = [],
+
         SECRET_KEY = "asdfnasdf;asdfasdfas",
 
         THROTTLE_ZONES = {
@@ -53,7 +55,13 @@ def runtests(*test_args, **kwargs):
     Invoke Django's test runner and collect output.
     Returns 0 if there were no failures
     '''
+    import django
     from django.test.utils import get_runner
+
+    try:
+        django.setup()
+    except AttributeError:
+        pass  # django.setup() only for Django >= 1.7
 
     if not test_args:
         test_args = ['throttle']

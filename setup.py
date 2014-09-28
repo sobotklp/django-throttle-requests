@@ -17,7 +17,7 @@ setup(
     description="A Django framework for application-layer rate limiting",
     long_description=long_description,
     packages=['throttle'],
-    url="https://github.com/sobotklp/django-throttle",
+    url="https://github.com/sobotklp/django-throttle-requests",
     version=__version__,
     author='Lewis Sobotkiewicz',
     author_email='lewis.sobot@gmail.com',

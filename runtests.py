@@ -3,8 +3,8 @@ from __future__ import print_function
 import os
 import sys
 import optparse
-from django.conf import settings
 from contextlib import contextmanager
+from django.conf import settings
 
 if not settings.configured:
     settings.configure(
@@ -104,6 +104,7 @@ def runtests(*test_args, **kwargs):
         failures = test_runner.run_tests(test_args)
 
     sys.exit(failures)
+
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()

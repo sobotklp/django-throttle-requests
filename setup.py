@@ -13,7 +13,7 @@ from throttle import __version__
 long_description = open('README.rst').read()
 
 setup(
-    name="django-throttle",
+    name="django-throttle-requests",
     description="A Django framework for application-layer rate limiting",
     long_description=long_description,
     packages=['throttle'],

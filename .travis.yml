@@ -51,7 +51,7 @@ matrix:
     - python: "3.5"
       env: DJANGO=1.9
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q Django==$DJANGO 
   - python setup.py -q install
 script:
   - python setup.py test

@@ -1,5 +1,8 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.importlib import import_module
+try:
+    from django.utils.importlib import import_module
+except ImportError:  # Not available in Django 1.9
+    from importlib import import_module
 
 def load_class_from_path(class_path):
     # Split the class into a <module, classname> pair

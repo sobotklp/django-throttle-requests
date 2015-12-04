@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement # Python 2.5
-from django.utils import unittest
+try:
+    from django.utils import unittest
+except ImportError:  # Not available in Django 1.9
+    import unittest
+
 from django.core.exceptions import ImproperlyConfigured
 
 from throttle.backends import load_backend_from_path

@@ -51,6 +51,10 @@ class ThrottleZone(object):
         if not THROTTLE_ENABLED:
             return view_func(request, *view_args, **view_kwargs)
 
+        # if func is a class view the request is the instance of the class
+        view_class = request
+        request = getattr(request, 'request', request)
+
         bucket_key = self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
 
         # Calculate the bucket offset to increment
@@ -68,7 +72,7 @@ class ThrottleZone(object):
         num_remaining = self.bucket_capacity - new_value
 
         # Execute the Django view. Add a few attributes to the response object.
-        response = view_func(request, *view_args, **view_kwargs)
+        response = view_func(view_class, *view_args, **view_kwargs)
         response.throttle_limit = self.bucket_capacity
         response.throttle_remaining = num_remaining
 

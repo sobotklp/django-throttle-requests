@@ -4,7 +4,7 @@ from django.conf import settings
 
 from throttle.zones.remoteip import RemoteIP
 from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
-from throttle.utils import load_class_from_path
+from throttle.utils import load_class_from_path, serialize_bucket_key
 from throttle.backends import get_backend
 
 THROTTLE_ENABLED = getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG)
@@ -51,7 +51,9 @@ class ThrottleZone(object):
         if not THROTTLE_ENABLED:
             return view_func(request, *view_args, **view_kwargs)
 
-        bucket_key = self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
+        bucket_key = serialize_bucket_key(
+            self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
+        )
 
         # Calculate the bucket offset to increment
         timestamp = self.get_timestamp()

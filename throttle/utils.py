@@ -1,3 +1,5 @@
+from hashlib import sha256
+
 from django.core.exceptions import ImproperlyConfigured
 try:
     from importlib import import_module
@@ -22,3 +24,8 @@ def load_class_from_path(class_path):
         return getattr(module, classname)
     except AttributeError:
         raise ImproperlyConfigured("Module %s has no class '%s'" % (modulename, classname))
+
+# Memcached can't take key with the spaces. This would be happen when
+#   you use more than one reverse proxy.
+def serialize_bucket_key(bucket_key):
+    return sha256(bucket_key.encode('utf-8')).hexdigest()

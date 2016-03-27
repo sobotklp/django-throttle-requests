@@ -59,5 +59,18 @@ Installation
     def myview(request):
        ...
 
+#. Also works with class-based views::
+
+    from throttle.decorators import throttle
+
+    @method_decorator(throttle(zone='default'), name='dispatch')
+    class TestView(View):
+
+        def head(self, request):
+            ...
+
+        def get(self, request):
+            ...
+
 :Code:          https://github.com/sobotklp/django-throttle-requests
 :Documentation: https://readthedocs.org/projects/django-throttle-requests/

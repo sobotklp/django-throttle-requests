@@ -10,9 +10,9 @@ except ImportError:
     raise ThrottleImproperlyConfigured("django-throttle-requests is configured to use redis, but redis-py is not installed!")
 
 # Lua script to update bucket data atomically.
-# In general, lua scripts should be used instead of Redis transactions to ensure atomicity. Transactions may ne
-# deprecated at some point. Also, nutcracker/twemproxy does not support transactions but does support scripting
-# as long as all keys used by the script hash to the same backend.
+# In general, lua scripts should be used instead of Redis transactions to ensure atomicity. Transactions may be
+# deprecated at some point. Also, nutcracker does not support transactions but does support scripting
+# as long as all keys used by the script hash to the same backend. The same limitation applies to Redis Cluster.
 #
 # Script takes 1 key and 4 arguments: <bucket_num>, <bucket_num_next>, <bucket_span>, <cost>
 INCR_BUCKET_SCRIPT = """

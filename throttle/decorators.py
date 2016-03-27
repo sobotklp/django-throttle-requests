@@ -5,7 +5,8 @@ from throttle.zones import get_zone
 
 
 def throttle(view_func=None, zone='default'):
-    def _enforce_throttle(func):
+    def decorator(func):
+
         @functools.wraps(func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
             # Get zone from cache
@@ -14,12 +15,18 @@ def throttle(view_func=None, zone='default'):
             # raises an exception if the rate limit is exceeded
             response = _throttle_zone.process_view(request, func, args, kwargs)
             return response
+
+        # Validate the rate limiter bucket
+        _zone = get_zone(zone)
+
+        if func:
+            setattr(_wrapped_view, 'throttle_zone', _zone)
+            return _wrapped_view
         return _wrapped_view
 
     # Validate the rate limiter bucket
     _zone = get_zone(zone)
-
     if view_func:
         setattr(view_func, 'throttle_zone', _zone)
-        return _enforce_throttle(view_func)
-    return _enforce_throttle
+        return decorator(view_func)
+    return decorator

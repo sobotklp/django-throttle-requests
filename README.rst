@@ -61,6 +61,9 @@ Installation
 
 #. Also works with class-based views::
 
+    from django.views.generic import View
+    from django.utils.decorators import method_decorator
+
     from throttle.decorators import throttle
 
     class TestView(View):

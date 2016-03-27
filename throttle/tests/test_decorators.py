@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.http import HttpResponse
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.conf.urls import patterns, url
 
 from throttle.decorators import throttle
 from throttle.exceptions import ThrottleZoneNotDefined
@@ -42,11 +43,6 @@ class TestView(View):
 
 # Explicitly create the view. This is only done for testing as we need to inspect the view code
 test_generic_view = TestView.as_view()
-
-try:
-    from django.conf.urls import patterns, url
-except ImportError: # django < 1.4
-    from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('',
     url(r'^test/$', _test_view),

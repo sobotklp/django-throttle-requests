@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement # Python 2.5
+from __future__ import with_statement  # Python 2.5
 try:
     from django.utils import unittest
 except ImportError:  # Not available in Django 1.9

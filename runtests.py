@@ -8,33 +8,33 @@ from django.conf import settings
 
 if not settings.configured:
     settings.configure(
-        ROOT_URLCONF = '',
-        DEBUG = False,
+        ROOT_URLCONF='',
+        DEBUG=False,
 
-        DATABASES = {
+        DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME': ':memory:',
-                }
+            }
         },
 
         # Need to use LocMemCache for testing 'throttle.backends.cache.CacheBackend'
         # Can't use DummyCache because our functionality depends on the cache backend actually saving values.
-        CACHES = {
+        CACHES={
             'default': {
                 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # Bad for production!
             }
         },
 
-        INSTALLED_APPS = [
+        INSTALLED_APPS=[
             'throttle',
-            ],
+        ],
 
-        MIDDLEWARE_CLASSES = [],
+        MIDDLEWARE_CLASSES=[],
 
-        SECRET_KEY = "asdfnasdf;asdfasdfas",
+        SECRET_KEY="asdfnasdf;asdfasdfas",
 
-        THROTTLE_ZONES = {
+        THROTTLE_ZONES={
             'default': {
                 'VARY': 'throttle.zones.RemoteIP',
                 'NUM_BUCKETS': 2,  # Number of buckets worth of history to keep. Must be at least 2
@@ -49,8 +49,8 @@ if not settings.configured:
             }
         },
 
-        THROTTLE_BACKEND = 'throttle.backends.cache.CacheBackend'
-        )
+        THROTTLE_BACKEND='throttle.backends.cache.CacheBackend'
+    )
 
 
 @contextmanager

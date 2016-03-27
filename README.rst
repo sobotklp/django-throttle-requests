@@ -66,6 +66,9 @@ Installation
     @method_decorator(throttle(zone='default'), name='dispatch')
     class TestView(View):
 
+        def dispatch(self, *args, **kwargs):
+            return super(TestView, self).dispatch(*args, **kwargs)
+
         def head(self, request):
             ...
 

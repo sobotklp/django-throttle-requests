@@ -12,20 +12,27 @@ from throttle.exceptions import ThrottleZoneNotDefined
 def _test_view(request):
     return HttpResponse('OK')
 
+
 @throttle
 @throttle(zone='test2')
 def _test_multiple_throttles(request):
     return HttpResponse("Photos")
 
+
 @throttle(zone='test2')
 def _test_view_with_parameters(request, id):
     return HttpResponse(str(id))
 
+
 def _test_view_not_throttled(request):
     return HttpResponse("Go ahead and DoS me!")
 
-@method_decorator(throttle(zone='default'), name='dispatch')
+
 class TestView(View):
+
+    @method_decorator(throttle(zone='default'))
+    def dispatch(self, *args, **kwargs):
+        return super(TestView, self).dispatch(*args, **kwargs)
 
     def head(self, request, id):
         return HttpResponse("Metadata")

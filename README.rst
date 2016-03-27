@@ -63,9 +63,9 @@ Installation
 
     from throttle.decorators import throttle
 
-    @method_decorator(throttle(zone='default'), name='dispatch')
     class TestView(View):
 
+        @method_decorator(throttle(zone='default'))
         def dispatch(self, *args, **kwargs):
             return super(TestView, self).dispatch(*args, **kwargs)
 

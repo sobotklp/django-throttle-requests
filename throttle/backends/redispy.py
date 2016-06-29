@@ -24,10 +24,16 @@ return newval
 
 INCR_BUCKET_SCRIPT_SHA1 = hashlib.sha1(INCR_BUCKET_SCRIPT.encode('utf-8')).hexdigest()
 
+from django.conf import settings
 
 class RedisBackend(ThrottleBackendBase):
     def __init__(self):
-        self.pool = redis.ConnectionPool(host='localhost', port=6379, db=0)  #TODO: Parameterize connection parameters
+        
+        THROTTLE_REDIS_HOST = getattr(settings, 'THROTTLE_REDIS_HOST', 'localhost')
+        THROTTLE_REDIS_PORT = getattr(settings, 'THROTTLE_REDIS_PORT', 6379)
+        THROTTLE_REDIS_DB = getattr(settings, 'THROTTLE_REDIS_DB', 0)
+
+        self.pool = redis.ConnectionPool(host=THROTTLE_REDIS_HOST, port=THROTTLE_REDIS_PORT, db=THROTTLE_REDIS_DB)  #TODO: Parameterize connection parameters
 
     def incr_bucket(self, zone_name, bucket_key, bucket_num, bucket_num_next, bucket_span, cost=1):
         conn = redis.Redis(connection_pool=self.pool)

@@ -48,6 +48,11 @@ Installation
     # Where to store request counts.
     THROTTLE_BACKEND = 'throttle.backends.cache.CacheBackend'
 
+    # Optional after Redis backend is chosen ('throttle.backends.redispy.RedisBackend')
+    THROTTLE_REDIS_HOST = 'localhost'
+    THROTTLE_REDIS_PORT = 6379
+    THROTTLE_REDIS_DB = THROTTLE_REDIS_DB'    
+    
     # Force throttling when DEBUG=True
     THROTTLE_ENABLED = True
 

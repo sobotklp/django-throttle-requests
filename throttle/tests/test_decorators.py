@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.http import HttpResponse
 from django.views.generic import View
 from django.utils.decorators import method_decorator
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+from django.test.utils import override_settings
 
 from throttle.decorators import throttle
 from throttle.exceptions import ThrottleZoneNotDefined
@@ -44,15 +45,14 @@ class TestView(View):
 # Explicitly create the view. This is only done for testing as we need to inspect the view code
 test_generic_view = TestView.as_view()
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^test/$', _test_view),
     url(r'^test/(\d+)/$', _test_view_with_parameters),
     url(r'^test-generic-view/(\d+)/?$', test_generic_view)
-)
+]
 
-
+@override_settings(ROOT_URLCONF=__name__)
 class test_throttle(TestCase):
-    urls = __module__
 
     def test_view_marked(self):
         '''

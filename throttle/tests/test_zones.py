@@ -1,7 +1,8 @@
 from __future__ import with_statement  # Python 2.5
 from django.test import TestCase
 from django.http import HttpResponse
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+from django.test.utils import override_settings
 
 from throttle.zones import RemoteIP, ThrottleZone
 
@@ -10,12 +11,12 @@ def _test_remote_ip(request):
     return HttpResponse(RemoteIP().get_bucket_key(request, _test_remote_ip, None, None))
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^test/$', _test_remote_ip),
-)
+]
 
+@override_settings(ROOT_URLCONF=__name__)
 class TestRemoteIP(TestCase):
-    urls = __module__
 
     def test_remoteIP(self):
         response = self.client.get('/test/')
@@ -29,6 +30,7 @@ class TestRemoteIP(TestCase):
         response = self.client.get('/test/', HTTP_X_FORWARDED_FOR='10.60.70.255', REMOTE_ADDR='10.5.2.1')
         self.assertContains(response, '10.60.70.255')
 
+@override_settings(ROOT_URLCONF=__name__)
 class Test_ThrottleZone(TestCase):
     # TODO: Add more tests for the constructor
     def setUp(self):

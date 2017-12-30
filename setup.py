@@ -22,7 +22,7 @@ setup(
     author='Lewis Sobotkiewicz',
     author_email='lewis.sobot@gmail.com',
     install_requires=[
-        'Django>=1.5',
+        'Django>=1.6',
     ],
     test_suite='runtests.runtests',
     classifiers=[
@@ -34,8 +34,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: Implementation :: PyPy',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

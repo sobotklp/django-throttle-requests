@@ -13,6 +13,7 @@ env:
   - DJANGO=1.11
   - DJANGO=2.0
   - DJANGO=2.1
+  - DJANGO=2.2
 matrix:
   exclude:
     - python: "3.4"
@@ -33,6 +34,12 @@ matrix:
       env: DJANGO=2.1
     - python: "pypy"
       env: DJANGO=2.1
+    - python: "3.4"
+      env: DJANGO=2.2
+    - python: "2.7"
+      env: DJANGO=2.2
+    - python: "pypy"
+      env: DJANGO=2.2
   include:
     - python: "3.6"
       env: DJANGO=1.11
@@ -46,6 +53,12 @@ matrix:
       env: DJANGO=2.1
     - python: "pypy3"
       env: DJANGO=2.1
+    - python: "3.6"
+      env: DJANGO=2.2
+    - python: "3.7"
+      env: DJANGO=2.2
+    - python: "pypy3"
+      env: DJANGO=2.2
 install:
   - pip install -q Django==$DJANGO 
   - python setup.py -q install

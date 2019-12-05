@@ -22,7 +22,7 @@ setup(
     author='Lewis Sobotkiewicz',
     author_email='lewis.sobot@gmail.com',
     install_requires=[
-        'Django>=1.6',
+        'Django>=1.7',
     ],
     test_suite='runtests.runtests',
     classifiers=[

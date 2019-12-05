@@ -1,5 +1,4 @@
 import functools
-from django.utils.decorators import available_attrs
 
 from throttle.zones import get_zone
 
@@ -7,7 +6,7 @@ from throttle.zones import get_zone
 def throttle(view_func=None, zone='default'):
     def decorator(func):
 
-        @functools.wraps(func, assigned=available_attrs(view_func))
+        @functools.wraps(func, assigned=functools.WRAPPER_ASSIGNMENTS)
         def _wrapped_view(request, *args, **kwargs):
             # Get zone from cache
             _throttle_zone = get_zone(zone)

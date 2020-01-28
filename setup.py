@@ -24,8 +24,10 @@ setup(
     install_requires=[
         'Django>=1.7',
     ],
+    license='MIT',
     test_suite='runtests.runtests',
     classifiers=[
+        'License :: OSI Approved :: MIT License',
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',

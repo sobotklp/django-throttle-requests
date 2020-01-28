@@ -52,8 +52,9 @@ Installation
     THROTTLE_REDIS_HOST = 'localhost'
     THROTTLE_REDIS_PORT = 6379
     THROTTLE_REDIS_DB = 0  
+    THROTTLE_REDIS_AUTH = 'pass'
     
-    # Force throttling when DEBUG=True
+    # Normally, throttling is disabled when DEBUG=True. Use this to force it to enabled.
     THROTTLE_ENABLED = True
 
 #. Use the ``@throttle`` decorator to enforce throttling rules on a view::

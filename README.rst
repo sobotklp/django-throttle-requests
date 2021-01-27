@@ -4,10 +4,7 @@ django-throttle-requests
 
 *a framework for implementing application-specific rate-limiting middleware for Django projects*
 
-.. image:: https://travis-ci.org/sobotklp/django-throttle-requests.png?branch=master
-   :alt: Build Status
-   :target: http://travis-ci.org/sobotklp/django-throttle-requests
-
+|Build|  |PyVersion|  |PyPiVersion|  |License|
 
 
 What this module is intended for:
@@ -86,3 +83,17 @@ Installation
 
 :Code:          https://github.com/sobotklp/django-throttle-requests
 :Documentation: https://readthedocs.org/projects/django-throttle-requests/
+
+.. |PyPiVersion| image:: https://img.shields.io/pypi/v/django-throttle-requests.svg
+   :alt: PyPi
+   :target: https://pypi.python.org/pypi/django-throttle-requests
+
+.. |License| image:: https://img.shields.io/badge/license-MIT-yellow.svg
+   :alt:
+
+.. |PyVersion| image:: https://img.shields.io/badge/python-2.7+-blue.svg
+   :alt:
+
+.. |Build| image:: https://secure.travis-ci.org/sobotklp/django-throttle-requests.png?branch=master
+    :alt: Build Status
+    :target: http://travis-ci.org/sobotklp/django-throttle-requests

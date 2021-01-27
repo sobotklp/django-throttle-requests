@@ -29,6 +29,8 @@ matrix:
       env: DJANGO=1.7
     - python: "3.9"
       env: DJANGO=1.7
+    - python: "pypy3"
+      env: DJANGO=1.7
     - python: "3.5"
       env: DJANGO=1.8
     - python: "3.6"

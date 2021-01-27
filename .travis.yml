@@ -1,10 +1,11 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
-  - "pypy"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  - "pypy3"
 env:
   - DJANGO=1.7
   - DJANGO=1.8
@@ -15,57 +16,62 @@ env:
   - DJANGO=2.1
   - DJANGO=2.2
   - DJANGO=3.0
+  - DJANGO=3.1.5
 matrix:
   exclude:
     - python: "3.5"
       env: DJANGO=1.7
     - python: "3.6"
       env: DJANGO=1.7
+    - python: "3.7"
+      env: DJANGO=1.7
+    - python: "3.8"
+      env: DJANGO=1.7
+    - python: "3.9"
+      env: DJANGO=1.7
     - python: "3.5"
       env: DJANGO=1.8
     - python: "3.6"
       env: DJANGO=1.8
-    - python: "2.7"
+    - python: "3.7"
+      env: DJANGO=1.8
+    - python: "3.8"
+      env: DJANGO=1.8
+    - python: "3.9"
+      env: DJANGO=1.8
+    - python: "3.7"
+      env: DJANGO=1.8
+    - python: "3.8"
       env: DJANGO=2.0
-    - python: "pypy"
+    - python: "3.9"
       env: DJANGO=2.0
-    - python: "3.4"
+    - python: "3.8"
       env: DJANGO=2.1
-    - python: "2.7"
+    - python: "3.9"
       env: DJANGO=2.1
-    - python: "pypy"
-      env: DJANGO=2.1
-    - python: "3.4"
+    - python: "3.8"
       env: DJANGO=2.2
-    - python: "2.7"
+    - python: "3.9"
       env: DJANGO=2.2
-    - python: "pypy"
-      env: DJANGO=2.2
-    - python: "3.4"
-      env: DJANGO=3.0
     - python: "3.5"
       env: DJANGO=3.0
-    - python: "2.7"
-      env: DJANGO=3.0
-    - python: "pypy"
-      env: DJANGO=3.0
+    - python: "3.5"
+      env: DJANGO=3.1.5
   include:
-    - python: "pypy3"
-      env: DJANGO=1.11
-    - python: "pypy3"
+    # Test unsupported Python versions
+    - python: "3.4"
       env: DJANGO=2.0
-    - python: "pypy3"
-      env: DJANGO=2.1
-    - python: "3.7"
-      env: DJANGO=2.2
-    - python: "pypy3"
-      env: DJANGO=2.2
-    - python: "3.7"
-      env: DJANGO=3.0
-    - python: "3.8"
-      env: DJANGO=3.0
-    - python: "pypy3"
-      env: DJANGO=3.0
+    - python: "2.7"
+      env: DJANGO=1.7
+    - python: "2.7"
+      env: DJANGO=1.8
+    - python: "2.7"
+      env: DJANGO=1.9
+    - python: "2.7"
+      env: DJANGO=1.10
+    - python: "2.7"
+      env: DJANGO=1.11
+
 install:
   - pip install -q Django==$DJANGO 
   - python setup.py -q install

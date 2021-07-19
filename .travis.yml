@@ -17,6 +17,7 @@ env:
   - DJANGO=2.2
   - DJANGO=3.0
   - DJANGO=3.1.5
+  - DJANGO=3.2.5
 matrix:
   exclude:
     - python: "3.5"
@@ -59,6 +60,8 @@ matrix:
       env: DJANGO=3.0
     - python: "3.5"
       env: DJANGO=3.1.5
+    - python: "3.5"
+      env: DJANGO=3.2.5
   include:
     # Test unsupported Python versions
     - python: "3.4"

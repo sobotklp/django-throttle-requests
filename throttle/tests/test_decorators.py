@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement  # Python 2.5
 from django.test import TestCase
 from django.http import HttpResponse
 from django.views.generic import View
 from django.utils.decorators import method_decorator
-from django.conf.urls import url
+from django.urls import re_path
 from django.test.utils import override_settings
 
 from throttle.decorators import throttle
@@ -46,9 +45,9 @@ class TestView(View):
 test_generic_view = TestView.as_view()
 
 urlpatterns = [
-    url(r'^test/$', _test_view),
-    url(r'^test/(\d+)/$', _test_view_with_parameters),
-    url(r'^test-generic-view/(\d+)/?$', test_generic_view)
+    re_path(r'^test/$', _test_view),
+    re_path(r'^test/(\d+)/$', _test_view_with_parameters),
+    re_path(r'^test-generic-view/(\d+)/?$', test_generic_view)
 ]
 
 @override_settings(ROOT_URLCONF=__name__)

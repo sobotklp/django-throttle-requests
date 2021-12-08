@@ -1,7 +1,6 @@
-from __future__ import with_statement  # Python 2.5
 from django.test import TestCase
 from django.http import HttpResponse
-from django.conf.urls import url
+from django.urls import re_path
 from django.test.utils import override_settings
 
 from throttle.zones import RemoteIP, ThrottleZone
@@ -12,7 +11,7 @@ def _test_remote_ip(request):
 
 
 urlpatterns = [
-    url(r'^test/$', _test_remote_ip),
+    re_path(r'^test/$', _test_remote_ip),
 ]
 
 @override_settings(ROOT_URLCONF=__name__)

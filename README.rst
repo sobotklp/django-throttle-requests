@@ -94,6 +94,6 @@ Installation
 .. |PyVersion| image:: https://img.shields.io/badge/python-2.7+-blue.svg
    :alt:
 
-.. |Build| image:: https://secure.travis-ci.org/sobotklp/django-throttle-requests.png?branch=master
-    :alt: Build Status
-    :target: http://travis-ci.org/sobotklp/django-throttle-requests
+.. |Build| image:: https://github.com/sobotklp/django-throttle-requests/workflows/CI/badge.svg?branch=master
+     :target: https://github.com/sobotklp/django-throttle-requests/actions?workflow=CI
+     :alt: CI Status

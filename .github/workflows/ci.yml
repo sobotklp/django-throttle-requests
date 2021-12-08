@@ -1,0 +1,54 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "pypy-3.6", "pypy-3.7"]
+        experimental: [false]
+        django: ["2.0", "2.1", "2.2", "3.0", "3.1.5", "3.2.9", "4.0"]
+        exclude:
+          - python-version: "3.9"
+            django: "2.0"
+          - python-version: "3.9"
+            django: "2.1"
+          - python-version: "3.9"
+            django: "2.2"
+          - python-version: "3.8"
+            django: "2.0"
+          - python-version: "3.8"
+            django: "2.1"
+          - python-version: "3.8"
+            django: "2.2"
+          - python-version: "3.5"
+            django: "3.1.5"
+          - python-version: "3.5"
+            django: "3.2.9"
+          - python-version: "3.5"
+            django: "4.0"
+          - python-version: "3.6"
+            django: "4.0"
+          - python-version: "3.7"
+            django: "4.0"
+                    
+    env:
+      DJANGO: ${{ matrix.django }}
+      
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Django ${{ matrix.django }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install -q Django==$DJANGO
+    - name: Run tests
+      run: |
+        python setup.py test

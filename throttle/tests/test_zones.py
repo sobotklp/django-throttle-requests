@@ -14,6 +14,7 @@ urlpatterns = [
     re_path(r'^test/$', _test_remote_ip),
 ]
 
+
 @override_settings(ROOT_URLCONF=__name__)
 class TestRemoteIP(TestCase):
 
@@ -28,6 +29,7 @@ class TestRemoteIP(TestCase):
     def test_with_proxied_ip(self):
         response = self.client.get('/test/', HTTP_X_FORWARDED_FOR='10.60.70.255', REMOTE_ADDR='10.5.2.1')
         self.assertContains(response, '10.60.70.255')
+
 
 @override_settings(ROOT_URLCONF=__name__)
 class Test_ThrottleZone(TestCase):

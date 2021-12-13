@@ -2,7 +2,7 @@ import time
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-from throttle.zones.remoteip import RemoteIP
+from throttle.zones.remoteip import RemoteIP  # noqa: F401
 from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
 from throttle.utils import load_class_from_path, serialize_bucket_key
 from throttle.backends import get_backend

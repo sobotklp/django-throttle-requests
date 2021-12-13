@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from throttle.utils import load_class_from_path
 
+
 class test_load_module_from_path(unittest.TestCase):
     def test_invalid_modulename(self):
         with self.assertRaises(ImproperlyConfigured):

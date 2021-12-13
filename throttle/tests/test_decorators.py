@@ -9,6 +9,7 @@ from django.test.utils import override_settings
 from throttle.decorators import throttle
 from throttle.exceptions import ThrottleZoneNotDefined
 
+
 @throttle
 def _test_view(request):
     return HttpResponse('OK')
@@ -41,6 +42,7 @@ class TestView(View):
     def get(self, request, id):
         return HttpResponse(str(id))
 
+
 # Explicitly create the view. This is only done for testing as we need to inspect the view code
 test_generic_view = TestView.as_view()
 
@@ -49,6 +51,7 @@ urlpatterns = [
     re_path(r'^test/(\d+)/$', _test_view_with_parameters),
     re_path(r'^test-generic-view/(\d+)/?$', test_generic_view)
 ]
+
 
 @override_settings(ROOT_URLCONF=__name__)
 class test_throttle(TestCase):
@@ -112,4 +115,3 @@ class test_throttle(TestCase):
             # Now the next request should fail
             response = self.client.get('/test-generic-view/%i' % i, REMOTE_ADDR='test_marked_class_view_returns_403_if_exceeded')
             self.assertEqual(response.status_code, 403)
-

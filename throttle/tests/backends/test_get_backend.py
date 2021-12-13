@@ -9,6 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from throttle.backends import load_backend_from_path
 
+
 class test_get_backend(unittest.TestCase):
     def test_load_backend_from_path_invalid_modulename(self):
         with self.assertRaises(ImproperlyConfigured):

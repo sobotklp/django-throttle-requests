@@ -6,12 +6,14 @@ from throttle.utils import load_class_from_path
 THROTTLE_BACKEND = getattr(settings, 'THROTTLE_BACKEND', {})
 _backend = None
 
+
 def load_backend_from_path(classpath):
     klass = load_class_from_path(classpath)
     try:
         return klass()
     except TypeError:
         raise ImproperlyConfigured("%s is not callable" % (klass.__name__))
+
 
 def get_backend():
     global _backend

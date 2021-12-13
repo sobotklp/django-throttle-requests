@@ -6,6 +6,7 @@ try:
 except ImportError:
     from django.utils.importlib import import_module
 
+
 def load_class_from_path(class_path):
     # Split the class into a <module, classname> pair
     try:
@@ -25,7 +26,8 @@ def load_class_from_path(class_path):
     except AttributeError:
         raise ImproperlyConfigured("Module %s has no class '%s'" % (modulename, classname))
 
-# Memcached can't take key with the spaces. This would be happen when
+
+# Memcached can't take keys with spaces. This could happen when
 #   you use more than one reverse proxy.
 def serialize_bucket_key(bucket_key):
     return sha256(bucket_key.encode('utf-8')).hexdigest()

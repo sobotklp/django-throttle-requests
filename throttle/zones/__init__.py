@@ -1,4 +1,3 @@
-import time
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
@@ -17,34 +16,31 @@ class ThrottleZone(object):
         self._zone_name = zone_name
         self.vary = vary_with(**config)
         self.config = config
-        self.get_timestamp = lambda: int(time.time())
+        self.backend = get_backend()
+
+        self.algorithm = config.get('ALGORITHM', 'fixed-bucket')
+        try:
+            self.algorithm_impl = self.backend.get_algorithm(self.algorithm)
+        except KeyError:
+            raise ThrottleImproperlyConfigured(f'ALGORITHM \'{self.algorithm}\' not supported by backend')
 
         try:
             self.bucket_interval = int(config['BUCKET_INTERVAL'])
             if self.bucket_interval <= 0:
                 raise ValueError
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_INTERVAL parameter)' % zone_name)
+            raise ThrottleImproperlyConfigured(f'THROTTLE_ZONE[\'{zone_name}\'] missing BUCKET_INTERVAL parameter)')
         except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_INTERVAL\'] must be > 0' % zone_name)
-
-        try:
-            self.num_buckets = int(config['NUM_BUCKETS'])
-            if self.num_buckets < 2:
-                raise ValueError
-        except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing NUM_BUCKETS parameter)' % zone_name)
-        except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'NUM_BUCKETS\'] must be >= 2' % zone_name)
+            raise ThrottleImproperlyConfigured(f'THROTTLE_ZONE[\'{zone_name}\'][\'BUCKET_INTERVAL\'] must be > 0')
 
         try:
             self.bucket_capacity = int(config['BUCKET_CAPACITY'])
         except KeyError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'] missing BUCKET_CAPACITY parameter)' % zone_name)
+            raise ThrottleImproperlyConfigured(f'THROTTLE_ZONE[\'{zone_name}\'] missing BUCKET_CAPACITY parameter)')
         except ValueError:
-            raise ThrottleImproperlyConfigured('THROTTLE_ZONE[\'%s\'][\'BUCKET_CAPACITY\'] must be an int' % zone_name)
+            raise ThrottleImproperlyConfigured(f'THROTTLE_ZONE[\'{zone_name}\'][\'BUCKET_CAPACITY\'] must be an int')
 
-        self.bucket_span = self.bucket_interval * self.num_buckets
+        self.bucket_span = self.bucket_interval
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         # If THROTTLE_ENABLED is False, just return the response from the view.
@@ -59,13 +55,8 @@ class ThrottleZone(object):
             self.vary.get_bucket_key(request, view_func, view_args, view_kwargs)
         )
 
-        # Calculate the bucket offset to increment
-        timestamp = self.get_timestamp()
-        bucket_num = int((timestamp % self.bucket_span) / self.bucket_interval)
-        bucket_num_next = (bucket_num + 1) % self.num_buckets
-
         # Tell the backing store to increment the count
-        new_value = get_backend().incr_bucket(self.name, bucket_key, bucket_num, bucket_num_next, self.bucket_span)
+        new_value = self.algorithm_impl(self.backend, self.name, bucket_key, self.bucket_interval, self.bucket_capacity)
 
         # Has the bucket capacity been exceeded?
         if new_value > self.bucket_capacity:

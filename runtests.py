@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-from __future__ import print_function
 import os
 import sys
-import optparse
+import argparse
 from contextlib import contextmanager
 from django.conf import settings
 
-if not settings.configured:
+
+def _apply_settings(use_redis):
     settings.configure(
         ROOT_URLCONF='',
         DEBUG=False,
@@ -37,26 +37,32 @@ if not settings.configured:
         THROTTLE_ZONES={
             'default': {
                 'VARY': 'throttle.zones.RemoteIP',
-                'NUM_BUCKETS': 2,  # Number of buckets worth of history to keep. Must be at least 2
+                'ALGORITHM': 'fixed-bucket',  # default
                 'BUCKET_CAPACITY': 5,  # Maximum number of requests allowed within BUCKET_INTERVAL
-                'BUCKET_INTERVAL': 1  # Number of seconds to use each bucket.
+                'BUCKET_INTERVAL': 1,  # Number of seconds to use each bucket.
             },
             'test2': {
                 'VARY': 'throttle.zones.RemoteIP',
-                'NUM_BUCKETS': 10,  # Number of buckets worth of history to keep. Must be at least 2
-                'BUCKET_CAPACITY': 5,
-                'BUCKET_INTERVAL': 60 * 15  # Number of seconds to use each bucket.
-            }
+                'ALGORITHM': 'fixed-bucket',  # default
+                'BUCKET_CAPACITY': 5,  # Maximum number of requests allowed within BUCKET_INTERVAL
+                'BUCKET_INTERVAL': 60,  # Number of seconds to use each bucket.
+            },
+            'gcra_test': {
+                'VARY': 'throttle.zones.RemoteIP',
+                'ALGORITHM': 'gcra',
+                'BUCKET_CAPACITY': 10,  # Maximum number of requests allowed within window BUCKET_INTERVAL
+                'BUCKET_INTERVAL': 10,  # Length of window
+            },
         },
 
-        THROTTLE_BACKEND='throttle.backends.cache.CacheBackend'
+        THROTTLE_BACKEND=('throttle.backends.redispy.RedisBackend' if use_redis else 'throttle.backends.cache.CacheBackend')
     )
 
 
 @contextmanager
 def record_coverage(enable_coverage=False):
     """
-    Start the coverage module if we've chose to run with test coverage enabled.
+    Start the coverage module if we chose to run with test coverage enabled.
     """
 
     # If coverage is not enabled, we don't have to bother with the rest of this function.
@@ -87,15 +93,14 @@ def runtests(*test_args, **kwargs):
     Returns 0 if there were no failures
     """
     coverage_enabled = kwargs.get("coverage", False) or os.environ.get("WITH_COVERAGE", "False") == "True"
+    use_redis = kwargs.get('use_redis', False)
+    _apply_settings(use_redis)
 
     import django
     from django.test.utils import get_runner
 
     with record_coverage(coverage_enabled):
-        try:
-            django.setup()
-        except AttributeError:
-            pass  # django.setup() only for Django >= 1.7
+        django.setup()
 
         if not test_args:
             test_args = ['throttle']
@@ -107,10 +112,12 @@ def runtests(*test_args, **kwargs):
 
 
 if __name__ == '__main__':
-    parser = optparse.OptionParser()
-    parser.add_option('--failfast', action='store_true', default=False, dest='failfast')
-    parser.add_option('--coverage', action='store_true', default=False, dest='coverage', help="generate an HTML coverage report")
-    parser.add_option('--verbosity', type="int", default=1, dest='verbosity')
-    (options, args) = parser.parse_args()
+    parser = argparse.ArgumentParser(description="Run unit tests for django-throttle-requests")
+    parser.add_argument('--failfast', action='store_true', default=False, dest='failfast')
+    parser.add_argument('--coverage', action='store_true', default=False, dest='coverage', help="generate an HTML coverage report")
+    parser.add_argument('--use-redis', action='store_true', default=False, dest='use_redis',
+                      help="Use local Redis server as backing store")
+    parser.add_argument('--verbosity', type=int, default=1, dest='verbosity')
+    args = parser.parse_args()
 
-    runtests(failfast=options.failfast, verbosity=options.verbosity, coverage=options.coverage, *args)
+    runtests(failfast=args.failfast, verbosity=args.verbosity, coverage=args.coverage, use_redis=args.use_redis)

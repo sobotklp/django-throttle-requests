@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages, setup
 try:
-    import multiprocessing # Suppresses a confusing but harmless warning when running ./setup.py test
+    import multiprocessing  # Suppresses a confusing but harmless warning when running ./setup.py test
     import logging
 except ImportError:
     # multiprocessing introduced in Python 2.6
@@ -23,7 +23,7 @@ setup(
     author='Lewis Sobotkiewicz',
     author_email='lewis.sobot@gmail.com',
     install_requires=[
-        'Django>=1.7',
+        'Django>=2.2',
     ],
     license='MIT',
     test_suite='runtests.runtests',

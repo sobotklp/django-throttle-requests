@@ -2,25 +2,34 @@
 django-throttle-requests
 ========================
 
-*a framework for implementing application-specific rate-limiting middleware for Django projects*
+*a framework for implementing rate-limiting middleware for Django projects*
 
 |Build|  |PyVersion|  |PyPiVersion|  |License|
 
+Overview
+========
 
-What this module is intended for:
-=================================
+This package allows Django developers to define application-level rate-limiting rules. Often, these rules would be expressed as "max # requests within a defined time period". E.g.:
 
-Implementing application-level (or just below) rate-limiting rules. Often, these rules would be expressed as "max # requests within a defined time period". E.g.:
+- an IP address may make at most 1500 requests/day
 
-* an IP address may make at most 1500 requests/day
+- users with an OAuth access token may make 500 reads/hour and 200 writes/hour
 
-* users with an OAuth access token may make 500 reads/hour and 200 writes/hour
+You can also define leaky bucket-style rules:
+
+- Allow 10 requests per minute, then every 6 seconds thereafter.
 
 
-What it is not intended for:
-============================
+Features
+========
 
-A token bucket or leaky bucket filter: intended primarily for traffic shaping, those algorithms are implemented by firewalls and servers such as ``nginx``.
+- Attach rules to specific views using a decorator
+- Supports multiple throttle configurations
+- Use Django's cache layer as the storage backend, or use Redis scripting for production-ready atomic operations
+- Define request attributes to rate limit (e.g. remote IP address, username, HTTP header value, device fingerprint, etc.)
+- Application-level rate limiting rules using fixed-bucket or generic cell rate algorithm (leaky bucket)
+
+
 
 Installation
 ============
@@ -31,13 +40,16 @@ Installation
 
 #. Add the directory ``throttle`` to your project's ``PYTHONPATH``.
 
+Usage
+=====
+
 #. Insert the following configuration into your project's settings::
 
     THROTTLE_ZONES = {
         'default': {
             'VARY':'throttle.zones.RemoteIP',
-            'NUM_BUCKETS':2,  # Number of buckets worth of history to keep. Must be at least 2
-            'BUCKET_INTERVAL':15 * 60,  # Period of time to enforce limits.
+            'ALGORITHM': 'fixed-bucket',  # Default if not defined.
+            'BUCKET_INTERVAL':15 * 60,  # Number of seconds to enforce limit.
             'BUCKET_CAPACITY':50,  # Maximum number of requests allowed within BUCKET_INTERVAL
         },
     }
@@ -45,7 +57,7 @@ Installation
     # Where to store request counts.
     THROTTLE_BACKEND = 'throttle.backends.cache.CacheBackend'
 
-    # Optional after Redis backend is chosen ('throttle.backends.redispy.RedisBackend')
+    # Optional if Redis backend is chosen ('throttle.backends.redispy.RedisBackend')
     THROTTLE_REDIS_HOST = 'localhost'
     THROTTLE_REDIS_PORT = 6379
     THROTTLE_REDIS_DB = 0  

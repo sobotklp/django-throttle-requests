@@ -12,6 +12,10 @@ jobs:
         experimental: [false]
         django: ["3.0", "3.1.5", "3.2.9", "4.0", "4.1", "4.2", "5.0.2"]
         exclude:
+          - python-version: "3.12" # Django uses the distutils module under the hood, which is removed in Python 3.12
+            django: "3.0"
+          - python-version: "3.12" # Django uses the distutils module under the hood, which is removed in Python 3.12
+            django: "3.1.5"
           - python-version: "3.7" # Django 4.0 supports Python 3.8+
             django: "4.0"
           - python-version: "3.7"

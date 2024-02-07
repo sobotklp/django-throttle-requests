@@ -103,7 +103,7 @@ Usage
 .. |License| image:: https://img.shields.io/badge/license-MIT-yellow.svg
    :alt:
 
-.. |PyVersion| image:: https://img.shields.io/badge/python-2.7+-blue.svg
+.. |PyVersion| image:: https://img.shields.io/badge/python-3.7+-blue.svg
    :alt:
 
 .. |Build| image:: https://github.com/sobotklp/django-throttle-requests/workflows/CI/badge.svg?branch=master

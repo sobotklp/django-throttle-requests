@@ -109,3 +109,15 @@ Usage
 .. |Build| image:: https://github.com/sobotklp/django-throttle-requests/workflows/CI/badge.svg?branch=master
      :target: https://github.com/sobotklp/django-throttle-requests/actions?workflow=CI
      :alt: CI Status
+
+Development
+===========
+
+Run unit tests::
+
+    uv run runtests.py
+
+Run linter::
+
+    uvx ruff@latest check
+

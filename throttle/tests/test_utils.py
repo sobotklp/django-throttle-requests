@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 try:
     from django.utils import unittest
 except ImportError:  # Not available in Django 1.9

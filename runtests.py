@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+import argparse
 import os
 import sys
-import argparse
 from contextlib import contextmanager
+
 from django.conf import settings
 
 

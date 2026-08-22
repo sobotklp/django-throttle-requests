@@ -1,10 +1,12 @@
-from django.test import TestCase
-from django.http import HttpResponse
-from django.urls import re_path
-from django.test.utils import override_settings
+from typing import ClassVar
 
-from throttle.zones import RemoteIP, ThrottleZone
+from django.http import HttpResponse
+from django.test import TestCase
+from django.test.utils import override_settings
+from django.urls import re_path
+
 from throttle.exceptions import ThrottleImproperlyConfigured
+from throttle.zones import RemoteIP, ThrottleZone
 
 
 def _test_remote_ip(request):
@@ -39,7 +41,8 @@ class Test_ThrottleZone(TestCase):
         self.zone = ThrottleZone('testZone', RemoteIP, BUCKET_INTERVAL=60, BUCKET_CAPACITY=15)
 
         class FakeRequest:
-            META = {
+
+            META: ClassVar[dict[str, str]] = {
                 'REMOTE_ADDR': '127.0.0.1',
             }
 

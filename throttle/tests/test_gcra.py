@@ -1,10 +1,12 @@
-from django.test import TestCase
-from django.http import HttpResponse
-from django.urls import re_path
-from django.test.utils import override_settings
+from typing import ClassVar
 
-from throttle.zones import RemoteIP, ThrottleZone
+from django.http import HttpResponse
+from django.test import TestCase
+from django.test.utils import override_settings
+from django.urls import re_path
+
 from throttle.exceptions import RateLimitExceeded
+from throttle.zones import RemoteIP, ThrottleZone
 
 
 def _test_remote_ip(request):
@@ -23,7 +25,7 @@ class Test_GCRAAlgorithm(TestCase):
         self.zone = ThrottleZone('gcra_test', RemoteIP, BUCKET_INTERVAL=10, BUCKET_CAPACITY=10, ALGORITHM='gcra')
 
         class FakeRequest:
-            META = {
+            META: ClassVar[dict[str, str]] = {
                 'REMOTE_ADDR': '127.0.0.1',
             }
 
@@ -35,7 +37,7 @@ class Test_GCRAAlgorithm(TestCase):
         self.assertEqual(response.throttle_remaining, 9)
 
         # Next nine requests should succeed
-        for i in range(0, 9):
+        for i in range(9):
             response = self.zone.process_view(self.fake_request, _test_remote_ip, (), {})
 
         # Eleventh one should fail

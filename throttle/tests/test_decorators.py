@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-from django.test import TestCase
 from django.http import HttpResponse
-from django.views.generic import View
-from django.utils.decorators import method_decorator
-from django.urls import re_path
+from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import re_path
+from django.utils.decorators import method_decorator
+from django.views.generic import View
 
 from throttle.decorators import throttle
 from throttle.exceptions import ThrottleZoneNotDefined
@@ -34,7 +33,7 @@ class TestView(View):
 
     @method_decorator(throttle(zone='default'))
     def dispatch(self, *args, **kwargs):
-        return super(TestView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def head(self, request, id):
         return HttpResponse("Metadata")
@@ -89,7 +88,7 @@ class test_throttle(TestCase):
         # THROTTLE_ZONE 'default' allows 5 requests/second
         for i in range(5):
             response = self.client.get('/test/', REMOTE_ADDR='test_returns_403_if_exceeded')
-            self.assertEqual(response.status_code, 200, '%ith iteration' % i)
+            self.assertEqual(response.status_code, 200, f'{i}th iteration')
 
         # Now the next request should fail
         response = self.client.get('/test/', REMOTE_ADDR='test_returns_403_if_exceeded')
@@ -104,9 +103,9 @@ class test_throttle(TestCase):
     def test_marked_class_view_returns_403_if_exceeded(self):
         # THROTTLE_ZONE 'default' allows 5 requests/second
         for i in range(5):
-            response = self.client.get('/test-generic-view/%i' % i, REMOTE_ADDR='test_marked_class_view_returns_403_if_exceeded')
+            response = self.client.get(f'/test-generic-view/{i}', REMOTE_ADDR='test_marked_class_view_returns_403_if_exceeded')
             self.assertEqual(response.status_code, 200)
 
         # Now the next request should fail
-        response = self.client.get('/test-generic-view/%i' % i, REMOTE_ADDR='test_marked_class_view_returns_403_if_exceeded')
+        response = self.client.get(f'/test-generic-view/{i}', REMOTE_ADDR='test_marked_class_view_returns_403_if_exceeded')
         self.assertEqual(response.status_code, 403)

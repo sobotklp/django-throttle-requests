@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
 import hashlib
+from collections.abc import Callable
+from typing import ClassVar
+
 from django.conf import settings
 
 from throttle.backends.base import ThrottleBackendBase
+
 try:
     import redis
     from redis.exceptions import NoScriptError
@@ -66,7 +69,7 @@ class RedisBackend(ThrottleBackendBase):
         """
         conn = redis.Redis(connection_pool=self.pool)
 
-        bucket_cache_key = "%s:%s" % (zone_name, bucket_key)
+        bucket_cache_key = f"{zone_name}:{bucket_key}"
 
         try:
             try:
@@ -83,7 +86,7 @@ class RedisBackend(ThrottleBackendBase):
         """
         conn = redis.Redis(connection_pool=self.pool)
 
-        bucket_cache_key = "%s:%s" % (zone_name, bucket_key)
+        bucket_cache_key = f"{zone_name}:{bucket_key}"
 
         try:
             try:
@@ -94,7 +97,7 @@ class RedisBackend(ThrottleBackendBase):
         except redis.ConnectionError:
             return 1
 
-    ALGORITHMS = {
+    ALGORITHMS: ClassVar[dict[str, Callable]] = {
         'fixed-bucket': incr_bucket,
         'gcra': gcra,
     }

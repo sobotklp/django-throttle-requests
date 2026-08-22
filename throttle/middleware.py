@@ -1,7 +1,7 @@
 from exceptions import RateLimitExceeded
 
 
-class RateLimitMiddleware(object):
+class RateLimitMiddleware:
     def process_exception(self, request, exception):
         if not isinstance(exception, RateLimitExceeded):
             return

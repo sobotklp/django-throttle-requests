@@ -19,13 +19,13 @@ def throttle(view_func=None, zone='default'):
         _zone = get_zone(zone)
 
         if func:
-            setattr(_wrapped_view, 'throttle_zone', _zone)
+            _wrapped_view.throttle_zone = _zone
             return _wrapped_view
         return _wrapped_view
 
     # Validate the rate limiter bucket
     _zone = get_zone(zone)
     if view_func:
-        setattr(view_func, 'throttle_zone', _zone)
+        view_func.throttle_zone = _zone
         return decorator(view_func)
     return decorator

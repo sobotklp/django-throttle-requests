@@ -1,5 +1,9 @@
 import time
+from collections.abc import Callable
+from typing import ClassVar
+
 from django.core.cache import cache
+
 from throttle.backends.base import ThrottleBackendBase
 
 
@@ -9,7 +13,7 @@ class CacheBackend(ThrottleBackendBase):
         self.time_function = lambda: time.time()
 
     def incr_bucket(self, zone_name, bucket_key, bucket_span, limit, cost=1):
-        bucket_cache_key = "%s:%s" % (zone_name, bucket_key)
+        bucket_cache_key = f"{zone_name}:{bucket_key}"
 
         # Increment the value of the current bucket.
         # Note that the Django documentation states that this operation is not guaranteed
@@ -33,7 +37,7 @@ class CacheBackend(ThrottleBackendBase):
 
         For production, please use the redispy implementation.
         """
-        bucket_cache_key = "%s:%s" % (zone_name, bucket_key)
+        bucket_cache_key = f"{zone_name}:{bucket_key}"
 
         now = self.time_function()
         between_reqs = bucket_span / limit
@@ -46,11 +50,11 @@ class CacheBackend(ThrottleBackendBase):
         if tat - now <= bucket_span - between_reqs:
             new_tat = max(now, tat) + between_reqs
             self.cache.set(bucket_cache_key, new_tat, bucket_span)
-            return round(((new_tat - now) / between_reqs))  # How many more requests are allowed
+            return round((new_tat - now) / between_reqs)  # How many more requests are allowed
 
         return limit + 1  # Limit exceeded
 
-    ALGORITHMS = {
+    ALGORITHMS: ClassVar[dict[str, Callable]] = {
         'fixed-bucket': incr_bucket,
         'gcra': gcra,
     }

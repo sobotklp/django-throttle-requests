@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.10"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.10", "pypy-3.11"]
         experimental: [false]
         django: ["5.2.5", "6.0"]
         exclude:
@@ -17,6 +17,8 @@ jobs:
           - python-version: "3.11"
             django: "6.0"
           - python-version: "pypy-3.10"
+            django: "6.0"
+          - python-version: "pypy-3.11"
             django: "6.0"
                     
     env:

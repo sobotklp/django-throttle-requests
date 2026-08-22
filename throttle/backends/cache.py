@@ -1,5 +1,7 @@
 import time
+
 from django.core.cache import cache
+
 from throttle.backends.base import ThrottleBackendBase
 
 
@@ -46,7 +48,7 @@ class CacheBackend(ThrottleBackendBase):
         if tat - now <= bucket_span - between_reqs:
             new_tat = max(now, tat) + between_reqs
             self.cache.set(bucket_cache_key, new_tat, bucket_span)
-            return round(((new_tat - now) / between_reqs))  # How many more requests are allowed
+            return round((new_tat - now) / between_reqs)  # How many more requests are allowed
 
         return limit + 1  # Limit exceeded
 

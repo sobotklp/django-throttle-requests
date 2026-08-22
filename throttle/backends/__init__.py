@@ -1,5 +1,5 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 from throttle.utils import load_class_from_path
 

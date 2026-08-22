@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
 import hashlib
+
 from django.conf import settings
 
 from throttle.backends.base import ThrottleBackendBase
+
 try:
     import redis
     from redis.exceptions import NoScriptError

@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-from django.test import TestCase
 from django.http import HttpResponse
-from django.views.generic import View
-from django.utils.decorators import method_decorator
-from django.urls import re_path
+from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import re_path
+from django.utils.decorators import method_decorator
+from django.views.generic import View
 
 from throttle.decorators import throttle
 from throttle.exceptions import ThrottleZoneNotDefined
@@ -34,7 +33,7 @@ class TestView(View):
 
     @method_decorator(throttle(zone='default'))
     def dispatch(self, *args, **kwargs):
-        return super(TestView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def head(self, request, id):
         return HttpResponse("Metadata")

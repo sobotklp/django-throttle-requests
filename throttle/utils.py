@@ -1,6 +1,7 @@
 from hashlib import sha256
 
 from django.core.exceptions import ImproperlyConfigured
+
 try:
     from importlib import import_module
 except ImportError:
@@ -17,7 +18,7 @@ def load_class_from_path(class_path):
     # Attempt to load the module
     try:
         module = import_module(modulename)
-    except (ImportError,):
+    except ImportError:
         raise ImproperlyConfigured("Error importing module '%s'" % (modulename))
 
     # Attempt to reference the class

@@ -1,10 +1,10 @@
-from django.test import TestCase
 from django.http import HttpResponse
-from django.urls import re_path
+from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import re_path
 
-from throttle.zones import RemoteIP, ThrottleZone
 from throttle.exceptions import ThrottleImproperlyConfigured
+from throttle.zones import RemoteIP, ThrottleZone
 
 
 def _test_remote_ip(request):

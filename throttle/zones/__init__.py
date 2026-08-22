@@ -1,17 +1,21 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
-from throttle.zones.remoteip import RemoteIP  # noqa: F401
-from throttle.exceptions import ThrottleZoneNotDefined, ThrottleImproperlyConfigured, RateLimitExceeded
-from throttle.utils import load_class_from_path, serialize_bucket_key
 from throttle.backends import get_backend
+from throttle.exceptions import (
+    RateLimitExceeded,
+    ThrottleImproperlyConfigured,
+    ThrottleZoneNotDefined,
+)
+from throttle.utils import load_class_from_path, serialize_bucket_key
+from throttle.zones.remoteip import RemoteIP  # noqa: F401
 
 THROTTLE_ENABLED = getattr(settings, 'THROTTLE_ENABLED', not settings.DEBUG)
 
 _THROTTLE_ZONES = {}
 
 
-class ThrottleZone(object):
+class ThrottleZone:
     def __init__(self, zone_name, vary_with, **config):
         self._zone_name = zone_name
         self.vary = vary_with(**config)

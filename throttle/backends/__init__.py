@@ -12,7 +12,7 @@ def load_backend_from_path(classpath):
     try:
         return klass()
     except TypeError:
-        raise ImproperlyConfigured("%s is not callable" % (klass.__name__))
+        raise ImproperlyConfigured(f"{klass.__name__} is not callable")
 
 
 def get_backend():

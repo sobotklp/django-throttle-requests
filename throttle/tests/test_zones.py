@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -39,7 +41,8 @@ class Test_ThrottleZone(TestCase):
         self.zone = ThrottleZone('testZone', RemoteIP, BUCKET_INTERVAL=60, BUCKET_CAPACITY=15)
 
         class FakeRequest:
-            META = {
+
+            META: ClassVar[dict[str, str]] = {
                 'REMOTE_ADDR': '127.0.0.1',
             }
 

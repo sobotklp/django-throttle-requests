@@ -13,19 +13,19 @@ def load_class_from_path(class_path):
     try:
         modulename, classname = class_path.rsplit('.', 1)
     except ValueError:
-        raise ImproperlyConfigured("'%s' isn't a valid module name" % (class_path))
+        raise ImproperlyConfigured(f"'{class_path}' isn't a valid module name")
 
     # Attempt to load the module
     try:
         module = import_module(modulename)
     except ImportError:
-        raise ImproperlyConfigured("Error importing module '%s'" % (modulename))
+        raise ImproperlyConfigured(f"Error importing module '{modulename}'")
 
     # Attempt to reference the class
     try:
         return getattr(module, classname)
     except AttributeError:
-        raise ImproperlyConfigured("Module %s has no class '%s'" % (modulename, classname))
+        raise ImproperlyConfigured(f"Module {modulename} has no class '{classname}'")
 
 
 # Memcached can't take keys with spaces. This could happen when

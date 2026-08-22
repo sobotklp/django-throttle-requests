@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.http import HttpResponse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -23,7 +25,7 @@ class Test_GCRAAlgorithm(TestCase):
         self.zone = ThrottleZone('gcra_test', RemoteIP, BUCKET_INTERVAL=10, BUCKET_CAPACITY=10, ALGORITHM='gcra')
 
         class FakeRequest:
-            META = {
+            META: ClassVar[dict[str, str]] = {
                 'REMOTE_ADDR': '127.0.0.1',
             }
 
